@@ -1,0 +1,12 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  DOCKER_IMAGE: ntutselab/stable-baselines-cpu:latest
+
+jobs:
+- template: azure_templates/tests.yml
+  parameters:
+    name: 'AllTest'
+    DOCKER_IMAGE: $(DOCKER_IMAGE)
+    env: '*'

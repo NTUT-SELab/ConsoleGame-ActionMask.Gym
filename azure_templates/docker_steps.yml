@@ -1,0 +1,3 @@
+steps:
+- script: docker pull ${{ parameters.DOCKER_IMAGE }}
+  displayName: 'Download docker image'
