@@ -1,47 +1,52 @@
 import gym
-import numpy as np
 import os
+import numpy as np
+
+from env import utils
 
 class BaseEnv(gym.Env):
     ''' mouse walking maze environment '''
 
     def __init__(self, map_name='default_map'):
         
-        self.map = load_map(map_name)
+        self.map = utils.load_map(map_name)
+        self.action_space = gym.spaces.Discrete(4)
+        self.obs_shape = self.map.shape
+        self.observation_space = gym.spaces.Box(low=0, high=5, shape=self.obs_shape, dtype=np.float16)
 
-    @staticmethod
-    def load_map(map_name):
-        maps_path = os.path.join(os.getcwd(), 'maps')
-        map_file = os.path.join(maps_path, map_name)
+    def reset(self):
 
-        map_buffer = None
-        with open(map_file, 'r') as file:
-            map_buffer = np.asarray(file.read().splitlines(), dtype='c')
-            map_buffer = map_buffer.astype(str)
+        self.map_cache = np.copy(self.map)
+        self.current_step = 0
 
-        return BaseEnv.check_map(map_buffer)
-        
-    @staticmethod
-    def check_map(map_buffer):
-        if len(map_buffer.shape) != 2:
-            raise Exception('The map shape must be a rectangle.')
+        return utils.map_to_obs(self.map_cache)
 
-        if len(map_buffer) * len(map_buffer[0]) < 12:
-            raise Exception('The movable area of ​​the rat must be bigger than 2.')
+    def step(self, action):
+        pass
 
-        if np.count_nonzero(map_buffer == 'M') != 1 or np.count_nonzero(map_buffer == 'E') != 1:
-            raise Exception('The map must contain 1 mouse and 1 exit.')
+    def render(self):
+        pass
 
-        if np.count_nonzero(map_buffer[0] == 'X') != map_buffer.shape[1]:
-            raise Exception('There are holes in the upper side of the map.')
+    def walking_maze(self, action):
 
-        if np.count_nonzero(map_buffer[map_buffer.shape[0] - 1] == 'X') != map_buffer.shape[1]:
-            raise Exception('There are holes in the lower side of the map.')
+        # Up
+        if action == 0:
+            pass
 
-        if np.count_nonzero(map_buffer.T[0] == 'X') != map_buffer.shape[0]:
-            raise Exception('There are holes in the left side of the map.')
+        # Down
+        if action == 1:
+            pass
 
-        if np.count_nonzero(map_buffer.T[map_buffer.shape[1] - 1] == 'X') != map_buffer.shape[0]:
-            raise Exception('There are holes in the right side of the map.')
+        # Left
+        if action == 2:
+            pass
 
-        return map_buffer
+        # Right
+        if action == 3:
+            pass
+
+    def get_reward(self, target_obj):
+        pass
+
+    def is_done(self):
+        pass
