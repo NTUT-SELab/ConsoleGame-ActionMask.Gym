@@ -7,9 +7,10 @@ from env import utils
 class BaseEnv(gym.Env):
     ''' mouse walking maze environment '''
 
-    def __init__(self, map_name='default_map'):
+    def __init__(self, map_name='default_map', end_step=100):
         
         self.map = utils.load_map(map_name)
+        self.end_step = end_step
         self.action_space = gym.spaces.Discrete(4)
         self.obs_shape = self.map.shape
         self.observation_space = gym.spaces.Box(low=0, high=5, shape=self.obs_shape, dtype=np.float16)
@@ -48,5 +49,5 @@ class BaseEnv(gym.Env):
     def get_reward(self, target_obj):
         pass
 
-    def is_done(self):
+    def is_done(self, target_obj):
         pass
