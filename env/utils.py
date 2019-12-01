@@ -40,6 +40,7 @@ def check_map(map_buffer):
     return map_buffer
 
 def map_to_obs(map_data):
+    map_data = map_data.copy()
     map_data[map_data == MapEnum.road.value] = MapObsEnum.road.value
     map_data[map_data == MapEnum.wall.value] = MapObsEnum.wall.value
     map_data[map_data == MapEnum.exit.value] = MapObsEnum.exit.value
@@ -51,7 +52,17 @@ def map_to_obs(map_data):
 
 def get_target_obj(map_data, action):
     mouse_position = get_mouse_position(map_data)
+    target_position = get_target_position(mouse_position, action)
 
+    return MapEnum(map_data[target_position[0]][target_position[1]])
+
+def get_mouse_position(map_data):
+    position = np.where(map_data == MapEnum.mouse.value)
+    position = np.asarray(position)
+    
+    return position.ravel()
+
+def get_target_position(mouse_position, action):
     # Up
     if action == 0:
         target_position = [mouse_position[0] - 1, mouse_position[1]]
@@ -65,10 +76,4 @@ def get_target_obj(map_data, action):
     if action == 3:
         target_position = [mouse_position[0], mouse_position[1] + 1]
 
-    return MapEnum(map_data[target_position[0]][target_position[1]])
-
-def get_mouse_position(map_data):
-    position = np.where(map_data == MapEnum.mouse.value)
-    position = np.asarray(position)
-    
-    return position.ravel()
+    return target_position

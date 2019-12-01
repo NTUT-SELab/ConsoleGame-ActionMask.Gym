@@ -27,4 +27,9 @@ def test_get_target_obj(test_data):
     assert utils.get_target_obj(pytest.map_buffer, test_data[0]) == test_data[1]
 
 def test_get_mouse_position():
-    np.testing.assert_array_equal(utils.get_mouse_position(pytest.map_buffer), [2,1])
+    np.testing.assert_array_equal(utils.get_mouse_position(pytest.map_buffer), [2, 1])
+
+@pytest.mark.parametrize('action', [[0, [1, 1]], [1, [3, 1]], [2, [2, 0]], [3, [2, 2]]])
+def test_get_target_position(action):
+    mouse_position = utils.get_mouse_position(pytest.map_buffer)
+    np.testing.assert_array_equal(utils.get_target_position(mouse_position, action[0]), action[1])

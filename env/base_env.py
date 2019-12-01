@@ -1,8 +1,10 @@
 import gym
 import os
+import time
 import numpy as np
 
 from env import utils
+from env.map_define import MapEnum
 
 class BaseEnv(gym.Env):
     ''' mouse walking maze environment '''
@@ -23,31 +25,48 @@ class BaseEnv(gym.Env):
         return utils.map_to_obs(self.map_cache)
 
     def step(self, action):
-        pass
 
-    def render(self):
-        pass
+        target_obj = utils.get_target_obj(self.map_cache, action)
+        reward = self.get_reward(target_obj)
+        done = self.is_done(target_obj)
+
+        self.walking_maze(action)
+        obs = utils.map_to_obs(self.map_cache)
+        
+        return obs, reward, done, { }
+
+    def render(self, delay_time=1):
+        
+        # for windows 
+        if os.name == 'nt':
+            _ = os.system('cls')
+        # for mac and linux(here, os.name is 'posix') 
+        else:
+            _ = os.system('clear') 
+
+        for rows in self.map_cache:
+            print(' '.join(rows))
+        time.sleep(delay_time)
 
     def walking_maze(self, action):
 
-        # Up
-        if action == 0:
-            pass
-
-        # Down
-        if action == 1:
-            pass
-
-        # Left
-        if action == 2:
-            pass
-
-        # Right
-        if action == 3:
-            pass
+        if utils.get_target_obj(self.map_cache, action) != MapEnum.wall:
+            mouse_position = utils.get_mouse_position(self.map_cache)
+            self.map_cache[mouse_position[0]][mouse_position[1]] = MapEnum.road.value
+            target_position = utils.get_target_position(mouse_position, action)
+            self.map_cache[target_position[0]][target_position[1]] = MapEnum.mouse.value
 
     def get_reward(self, target_obj):
-        pass
+    
+        if target_obj == MapEnum.food:
+            return 1
+        elif target_obj == MapEnum.poison:
+            return -1
+        elif target_obj == MapEnum.exit:
+            return 2
+        else:
+            return 0
 
     def is_done(self, target_obj):
-        pass
+        
+        return self.current_step >= self.end_step or target_obj == MapEnum.exit
