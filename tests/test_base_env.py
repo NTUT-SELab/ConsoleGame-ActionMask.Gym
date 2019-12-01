@@ -6,7 +6,7 @@ from env.base_env import BaseEnv
 from env.map_define import MapEnum
 
 def setup_function():
-    pytest.env = BaseEnv()
+    pytest.env = BaseEnv(end_step=100)
 
 def test_reset():
     pytest.env.map_cache = None

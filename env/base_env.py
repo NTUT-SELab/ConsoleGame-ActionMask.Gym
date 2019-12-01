@@ -9,7 +9,7 @@ from env.map_define import MapEnum
 class BaseEnv(gym.Env):
     ''' mouse walking maze environment '''
 
-    def __init__(self, map_name='default_map', end_step=100):
+    def __init__(self, map_name='default_map', end_step=1000):
         
         self.map = utils.load_map(map_name)
         self.end_step = end_step
@@ -32,7 +32,8 @@ class BaseEnv(gym.Env):
 
         self.walking_maze(action)
         obs = utils.map_to_obs(self.map_cache)
-        
+        self.current_step += 1
+
         return obs, reward, done, { }
 
     def render(self, delay_time=1):
