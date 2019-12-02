@@ -1,3 +1,6 @@
+import sys
+sys.path.append('./')
+
 from env.negative_reward_env import NegativeRewardEnv
 from stable_baselines import PPO2
 from stable_baselines.common.vec_env import  DummyVecEnv

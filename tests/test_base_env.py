@@ -6,12 +6,12 @@ from env.base_env import BaseEnv
 from env.map_define import MapEnum
 
 def setup_function():
-    pytest.env = BaseEnv(end_step=100)
+    pytest.env = BaseEnv(map_name='map1', end_step=100)
 
 def test_reset():
     pytest.env.map_cache = None
     pytest.env.current_step = 100
-    map_data = utils.load_map('default_map')
+    map_data = utils.load_map('map1')
 
     np.testing.assert_array_equal(pytest.env.reset(), utils.map_to_obs(map_data))
 

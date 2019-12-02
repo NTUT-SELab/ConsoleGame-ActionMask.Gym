@@ -4,7 +4,7 @@ from env.negative_reward_env import NegativeRewardEnv
 from env.map_define import MapEnum
 
 def setup_function():
-    pytest.env = NegativeRewardEnv()
+    pytest.env = NegativeRewardEnv(map_name='map1')
 
 def test_invalid_action_reward():
     pytest.env.reset()
