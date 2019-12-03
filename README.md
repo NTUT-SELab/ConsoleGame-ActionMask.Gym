@@ -1,4 +1,5 @@
 # Mouse walking maze [[OpenAI Gym](https://gym.openai.com/)] (開發中)
+<img src="./img/default_map.gif" align="right"/>
 
 [![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.mouse-walking-maze.gym?branchName=master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=3&branchName=master)
 ![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/KennethTang/github/3)
