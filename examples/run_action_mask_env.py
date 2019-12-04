@@ -17,11 +17,14 @@ model = PPO2.load("mouse")
 
 done = False
 states = None
-action_mask = None
+action_masks = []
 obs = env.reset()
 
 while not done:
-    action, states = model.predict(obs, states, action_mask)
-    obs, _, done, info = env.step(action)
-    action_mask = info.get('action_mask')
+    action, states = model.predict(obs, states, action_mask=action_masks)
+    obs, _, done, infos = env.step(action)
     env.render()
+    action_masks.clear()
+    for info in infos:
+            env_action_mask = info.get('action_mask')
+            action_masks.append(env_action_mask) 
