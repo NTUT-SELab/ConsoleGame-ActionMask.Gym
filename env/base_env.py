@@ -7,10 +7,13 @@ from env import utils
 from env.map_define import MapEnum
 
 class BaseEnv(gym.Env):
-    ''' mouse walking maze environment '''
+    """
+    A mouse walking maze environment.
 
+    : param map_name: (str) 要運行的地圖和相關資訊
+    : param end_step: (int) 每個回合，最多可運行的步數
+    """
     def __init__(self, map_name='default_map', end_step=1000):
-        
         self.map = utils.load_map(map_name)
         self.end_step = end_step
         self.action_space = gym.spaces.Discrete(4)
@@ -18,14 +21,20 @@ class BaseEnv(gym.Env):
         self.observation_space = gym.spaces.Box(low=0, high=5, shape=self.obs_shape, dtype=np.float16)
 
     def reset(self):
-
+        """
+        Reset environment.
+        """
         self.map_cache = np.copy(self.map)
         self.current_step = 0
 
         return utils.map_to_obs(self.map_cache)
 
     def step(self, action):
+        """
+        Tell the environment which action to do.
 
+        : param action: (int) 要執行的動作
+        """
         target_obj = utils.get_target_obj(self.map_cache, action)
         reward = self.get_reward(target_obj)
         done = self.is_done(target_obj)
@@ -37,7 +46,11 @@ class BaseEnv(gym.Env):
         return obs, reward, done, { }
 
     def render(self, delay_time=1):
-        
+        """
+        Print environment.
+
+        : param delay_time: (float) 每次打印要延遲的時間
+        """
         # for windows 
         if os.name == 'nt':
             _ = os.system('cls')
@@ -50,7 +63,11 @@ class BaseEnv(gym.Env):
         time.sleep(delay_time)
 
     def walking_maze(self, action):
+        """
+        Move mouse position.
 
+        : param action: (int) 要執行的動作
+        """
         if utils.get_target_obj(self.map_cache, action) != MapEnum.wall:
             mouse_position = utils.get_mouse_position(self.map_cache)
             self.map_cache[mouse_position[0]][mouse_position[1]] = MapEnum.road.value
@@ -58,7 +75,11 @@ class BaseEnv(gym.Env):
             self.map_cache[target_position[0]][target_position[1]] = MapEnum.mouse.value
 
     def get_reward(self, target_obj):
-    
+        """
+        Give relative rewards based on mouse actions.
+
+        : param target_obj: (MapEnum) 老鼠前方ㄧ格的物件
+        """
         if target_obj == MapEnum.food:
             return 1
         elif target_obj == MapEnum.poison:
@@ -69,5 +90,9 @@ class BaseEnv(gym.Env):
             return 0
 
     def is_done(self, target_obj):
-        
+        """
+        Check if this round is over.
+
+        : param target_obj: (MapEnum) 老鼠前方ㄧ格的物件
+        """
         return self.current_step >= self.end_step or target_obj == MapEnum.exit
