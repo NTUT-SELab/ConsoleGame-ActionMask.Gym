@@ -3,7 +3,8 @@ __pycache__
 .coverage
 .pytest_cache
 .vscode
+*.zip
 
 htmlcov
 coverage.xml
-mouse.zip
+tensorboard/

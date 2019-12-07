@@ -18,11 +18,11 @@ class NegativeRewardEnv(BaseEnv):
         : param target_obj: (MapEnum) 老鼠前方ㄧ格的物件
         """
         if target_obj == MapEnum.food:
-            return 1
+            return 2
         elif target_obj == MapEnum.poison:
             return -1
         elif target_obj == MapEnum.exit:
-            return 2
+            return 1
         elif target_obj == MapEnum.wall:
             return -5
         else:

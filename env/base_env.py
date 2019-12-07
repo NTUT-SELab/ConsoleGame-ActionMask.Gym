@@ -17,7 +17,7 @@ class BaseEnv(gym.Env):
         self.map = utils.load_map(map_name)
         self.end_step = end_step
         self.action_space = gym.spaces.Discrete(4)
-        self.obs_shape = self.map.shape
+        self.obs_shape = (self.map.shape[0], self.map.shape[1], 1)
         self.observation_space = gym.spaces.Box(low=0, high=5, shape=self.obs_shape, dtype=np.float16)
 
     def reset(self):
@@ -27,7 +27,7 @@ class BaseEnv(gym.Env):
         self.map_cache = np.copy(self.map)
         self.current_step = 0
 
-        return utils.map_to_obs(self.map_cache)
+        return utils.map_to_obs(self.map_cache, self.obs_shape)
 
     def step(self, action):
         """
@@ -40,7 +40,7 @@ class BaseEnv(gym.Env):
         done = self.is_done(target_obj)
 
         self.walking_maze(action)
-        obs = utils.map_to_obs(self.map_cache)
+        obs = utils.map_to_obs(self.map_cache, self.obs_shape)
         self.current_step += 1
 
         return obs, reward, done, { }
@@ -81,11 +81,11 @@ class BaseEnv(gym.Env):
         : param target_obj: (MapEnum) 老鼠前方ㄧ格的物件
         """
         if target_obj == MapEnum.food:
-            return 1
+            return 2
         elif target_obj == MapEnum.poison:
             return -1
         elif target_obj == MapEnum.exit:
-            return 2
+            return 1
         else:
             return 0
 

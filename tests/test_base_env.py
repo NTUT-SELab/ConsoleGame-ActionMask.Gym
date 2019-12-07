@@ -13,7 +13,7 @@ def test_reset():
     pytest.env.current_step = 100
     map_data = utils.load_map('map1')
 
-    np.testing.assert_array_equal(pytest.env.reset(), utils.map_to_obs(map_data))
+    np.testing.assert_array_equal(pytest.env.reset(), utils.map_to_obs(map_data, pytest.env.obs_shape))
 
 def test_eat_food():
     pytest.env.reset()
@@ -24,7 +24,7 @@ def test_eat_food():
     pytest.env.step(3)
     _, reward, _, _ = pytest.env.step(0)
 
-    assert reward == 1
+    assert reward == 2
 
 def test_eat_poison():
     pytest.env.reset()
@@ -52,7 +52,7 @@ def test_invalid_action():
 
     np.testing.assert_array_equal(pytest.env.map_cache, pytest.env.map)
 
-@pytest.mark.parametrize('test_data', [[MapEnum.food, 1], [MapEnum.poison, -1], [MapEnum.exit, 2], [MapEnum.road, 0], [MapEnum.wall, 0]])
+@pytest.mark.parametrize('test_data', [[MapEnum.food, 2], [MapEnum.poison, -1], [MapEnum.exit, 1], [MapEnum.road, 0], [MapEnum.wall, 0]])
 def test_reward(test_data):
     assert pytest.env.get_reward(test_data[0]) == test_data[1]
 

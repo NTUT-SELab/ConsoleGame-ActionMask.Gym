@@ -15,5 +15,5 @@ def test_eat_food():
     pytest.env.step(3)
     _, reward, _, info = pytest.env.step(0)
 
-    assert reward == 1
+    assert reward == 2
     np.testing.assert_array_equal(info.get('action_mask'), [0, 1, 0, 1])

@@ -13,6 +13,7 @@ def setup_function():
             ['X', 'X', 'X', 'X']], dtype=str)
 
 def test_map_to_obs():
+    obs_shape = (pytest.map_buffer.shape[0], pytest.map_buffer.shape[1], 1)
     obs = np.asarray([
         ['1', '1', '1', '1'], 
         ['1', '0', '2', '1'], 
@@ -20,7 +21,7 @@ def test_map_to_obs():
         ['1', '5', '2', '1'], 
         ['1', '1', '1', '1']], dtype=np.float16)
 
-    np.testing.assert_array_equal(utils.map_to_obs(pytest.map_buffer), obs)
+    np.testing.assert_array_equal(utils.map_to_obs(pytest.map_buffer, obs_shape), np.reshape(obs, obs_shape))
 
 @pytest.mark.parametrize('test_data', [[0, MapEnum.road], [1, MapEnum.poison], [2, MapEnum.wall], [3, MapEnum.food]])
 def test_get_target_obj(test_data):

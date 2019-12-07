@@ -49,7 +49,7 @@ def check_map(map_data):
 
     return map_data
 
-def map_to_obs(map_data):
+def map_to_obs(map_data, shape):
     """
     Convert map data to neural network input formate.
 
@@ -63,7 +63,7 @@ def map_to_obs(map_data):
     map_data[map_data == MapEnum.food.value] = MapObsEnum.food.value
     map_data[map_data == MapEnum.poison.value] = MapObsEnum.poison.value
 
-    return map_data.astype(np.float16)
+    return np.reshape(map_data.astype(np.float16), shape)
 
 def get_target_obj(map_data, action):
     """

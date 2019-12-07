@@ -13,6 +13,6 @@ def test_invalid_action_reward():
     _, reward, _, _ = pytest.env.step(2)
     assert reward == -5
 
-@pytest.mark.parametrize('test_data', [[MapEnum.food, 1], [MapEnum.poison, -1], [MapEnum.exit, 2], [MapEnum.road, 0], [MapEnum.wall, -5]])
+@pytest.mark.parametrize('test_data', [[MapEnum.food, 2], [MapEnum.poison, -1], [MapEnum.exit, 1], [MapEnum.road, 0], [MapEnum.wall, -5]])
 def test_reward(test_data):
     assert pytest.env.get_reward(test_data[0]) == test_data[1]
