@@ -4,10 +4,8 @@ jobs:
   - template: docker_steps.yml
     parameters:
       DOCKER_IMAGE: ${{ parameters.DOCKER_IMAGE }}
-  - script: ./scripts/run_tests_CI.sh "${TEST_GLOB}"
+  - script: ./scripts/run_tests_CI.sh
     displayName: 'Run test'
-    env:
-      TEST_GLOB: ${{ parameters.env }}
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: Cobertura

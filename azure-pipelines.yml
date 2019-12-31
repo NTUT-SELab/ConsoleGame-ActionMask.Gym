@@ -9,4 +9,3 @@ jobs:
   parameters:
     name: 'AllTest'
     DOCKER_IMAGE: $(DOCKER_IMAGE)
-    env: '*'
