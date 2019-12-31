@@ -42,11 +42,11 @@ cd mouse-walking-maze.gym
 
 > SB_PATH是 `stable-baselines` 專案存放的路徑
 > ```
-> SB_PATH=/homes/user/stable-baselines/ ./run_docker_gpu.sh python ./examples/run_base_env.py
+> SB_PATH=/homes/user/stable-baselines/ ./scripts/run_docker_gpu.sh python ./examples/MouseWalkingMaze/run_base_env.py
 > ```
 > 使用GPU請參考: [Build and run Docker containers leveraging NVIDIA GPUs](https://github.com/NVIDIA/nvidia-docker)
 
 - 直接執行
 > ```
-> python3 ./examples/run_base_env.py
+> python3 ./examples/MouseWalkingMaze/run_base_env.py
 > ```

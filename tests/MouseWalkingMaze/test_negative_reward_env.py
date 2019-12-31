@@ -1,7 +1,7 @@
 import pytest
 
-from env.negative_reward_env import NegativeRewardEnv
-from env.map_define import MapEnum
+from env.MouseWalkingMaze.negative_reward_env import NegativeRewardEnv
+from env.MouseWalkingMaze.map_define import MapEnum
 
 def setup_function():
     pytest.env = NegativeRewardEnv(map_name='map1')

@@ -1,6 +1,6 @@
-from env import utils
-from env.base_env import BaseEnv
-from env.map_define import MapEnum
+from env.MouseWalkingMaze import utils
+from env.MouseWalkingMaze.base_env import BaseEnv
+from env.MouseWalkingMaze.map_define import MapEnum
 
 class ActionMaskEnv(BaseEnv):
     """

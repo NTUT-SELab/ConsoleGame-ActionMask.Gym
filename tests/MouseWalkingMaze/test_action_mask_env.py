@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from env.action_mask_env import ActionMaskEnv
+from env.MouseWalkingMaze.action_mask_env import ActionMaskEnv
 
 def setup_function():
     pytest.env = ActionMaskEnv(map_name='map1', end_step=100)

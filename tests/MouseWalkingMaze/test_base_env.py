@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 
-from env import utils
-from env.base_env import BaseEnv
-from env.map_define import MapEnum
+from env.MouseWalkingMaze import utils
+from env.MouseWalkingMaze.base_env import BaseEnv
+from env.MouseWalkingMaze.map_define import MapEnum
 
 def setup_function():
     pytest.env = BaseEnv(map_name='map1', end_step=100)

@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
 
-from env import utils
-from env.map_define import MapEnum, MapObsEnum
+from env.MouseWalkingMaze import utils
+from env.MouseWalkingMaze.map_define import MapEnum, MapObsEnum
 
 def setup_function():
     pytest.map_buffer = np.asarray([
