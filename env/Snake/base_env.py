@@ -1,4 +1,6 @@
 import gym
+import os
+import time
 import numpy as np
 
 from env.Snake import utils
@@ -13,13 +15,32 @@ class BaseEnv(gym.Env):
         if high < 10 or width < 10 :
             raise Exception('地圖的高度與寬度必須 > 10')
 
-    def reset(self):
-        self.map = utils.generate_map(self.high, self.width)
-        self.snake_position = utils.generate_snake()
-        self.map = utils.reflash_map(self.map, self.snake_position)
-        self.food_position = utils.generate_food(self.map)
-        self.map = utils.reflash_map(self.map, self.snake_position, self.food_position)
+        self.action_space = gym.spaces.Discrete(4)
+        self.obs_shape = (high, width, 1)
+        self.observation_space = gym.spaces.Box(low=0, high=4, shape=self.obs_shape, dtype=np.float16)
 
-    def render(self):
-        for rows in self.map:
+    def reset(self):
+        self.map_data = utils.generate_map(self.high, self.width)
+        self.snake_position = utils.generate_snake()
+        self.map_data = utils.reflash_map(self.map_data, self.snake_position)
+        self.food_position = utils.generate_food(self.map_data)
+        self.map_data = utils.reflash_map(self.map_data, self.snake_position, self.food_position)
+
+        return utils.map_to_obs(self.map_data, self.obs_shape)
+
+    def step(self, action):
+        pass
+
+    def render(self, delay_time=1):
+
+        # for windows 
+        if os.name == 'nt':
+            _ = os.system('cls')
+        # for mac and linux(here, os.name is 'posix') 
+        else:
+            _ = os.system('clear') 
+        
+        for rows in self.map_data:
             print(' '.join(rows))
+
+        time.sleep(delay_time)

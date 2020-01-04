@@ -4,31 +4,84 @@ import random as rnd
 from env.Snake.map_define import MapEnum, MapObsEnum
 
 def generate_map(high, width):
-    map = np.full((high, width), MapEnum.road.value)
-    map[0] = MapEnum.wall.value
-    map[high - 1] = MapEnum.wall.value
-    map[:, 0] = MapEnum.wall.value
-    map[:, width - 1] = MapEnum.wall.value
+    map_data = np.full((high, width), MapEnum.road.value)
+    map_data[0] = MapEnum.wall.value
+    map_data[high - 1] = MapEnum.wall.value
+    map_data[:, 0] = MapEnum.wall.value
+    map_data[:, width - 1] = MapEnum.wall.value
 
-    return map
+    return map_data
 
 def generate_snake():
     snake_position = [[3, 1], [2, 1], [1, 1]]
     return snake_position
 
-def generate_food(map):
-    road_coordinate = np.where(map == MapEnum.road.value)
+def generate_food(map_data):
+    road_coordinate = np.where(map_data == MapEnum.road.value)
     food_position = rnd.randint(0, len(road_coordinate[0]) - 1)
     return [road_coordinate[0][food_position], road_coordinate[1][food_position]]
 
-def reflash_map(map, snake_position, food_position=None):
-    map[map == MapEnum.head.value ] = ' '
-    map[map == MapEnum.body.value ] = ' '
-    map[snake_position[0][0]][snake_position[0][1]] = MapEnum.head.value
+def reflash_map(map_data, snake_position, food_position=None):
+    map_data[map_data == MapEnum.head.value ] = ' '
+    map_data[map_data == MapEnum.body.value ] = ' '
+    map_data[snake_position[0][0]][snake_position[0][1]] = MapEnum.head.value
     for body_index in range(1, len(snake_position)):
-        map[snake_position[body_index][0]][snake_position[body_index][1]] = MapEnum.body.value
+        map_data[snake_position[body_index][0]][snake_position[body_index][1]] = MapEnum.body.value
 
     if food_position is not None:
-        map[food_position[0], food_position[1]] = MapEnum.food.value
+        map_data[food_position[0], food_position[1]] = MapEnum.food.value
 
-    return map
+    return map_data
+
+def map_to_obs(map_data, shape):
+    map_data = map_data.copy()
+    map_data[map_data == MapEnum.road.value] = MapObsEnum.road.value
+    map_data[map_data == MapEnum.wall.value] = MapObsEnum.wall.value
+    map_data[map_data == MapEnum.head.value] = MapObsEnum.head.value
+    map_data[map_data == MapEnum.body.value] = MapObsEnum.body.value
+    map_data[map_data == MapEnum.food.value] = MapObsEnum.food.value
+
+    return np.reshape(map_data.astype(np.float16), shape)
+
+def get_target_obj(map_data, action):
+    """
+    Get the objects that the mouse will encounter after moving.
+
+    : param action: (int) 要執行的動作
+    """
+    snake_head_position = get_snake_head_position(map_data)
+    target_position = get_target_position(snake_head_position, action)
+
+    return MapEnum(map_data[target_position[0]][target_position[1]])
+
+def get_snake_head_position(map_data):
+    """
+    Get the current coordinate of the mouse.
+
+    : param map_data: (list) 整張地圖的集合
+    """
+    position = np.where(map_data == MapEnum.head.value)
+    position = np.asarray(position)
+    
+    return position.ravel()
+
+def get_target_position(snake_head_position, action):
+    """
+    Get the target coordinate of the mouse to be moved.
+
+    : param action: (int) 要執行的動作
+    """
+    # Up
+    if action == 0:
+        target_position = [snake_head_position[0] - 1, snake_head_position[1]]
+    # Down
+    if action == 1:
+        target_position = [snake_head_position[0] + 1, snake_head_position[1]]
+    # Left
+    if action == 2:
+        target_position = [snake_head_position[0], snake_head_position[1] - 1]
+    # Right
+    if action == 3:
+        target_position = [snake_head_position[0], snake_head_position[1] + 1]
+
+    return target_position
