@@ -62,8 +62,8 @@ def test_is_done(current_step, target_obj):
     pytest.env.current_step = current_step
 
     if current_step >= 100:
-        assert pytest.env.is_done(target_obj) == True
+        assert pytest.env.is_done(target_obj)
     elif target_obj == MapEnum.exit:
-        assert pytest.env.is_done(target_obj) == True
+        assert pytest.env.is_done(target_obj)
     else:
-        assert pytest.env.is_done(target_obj) == False
+        assert not pytest.env.is_done(target_obj)

@@ -22,14 +22,15 @@ def generate_food(map_data):
     return [road_coordinate[0][food_position], road_coordinate[1][food_position]]
 
 def reflash_map(map_data, snake_position, food_position=None):
+    if food_position is not None:
+        map_data[food_position[0], food_position[1]] = MapEnum.food.value
+        return map_data
+
     map_data[map_data == MapEnum.head.value ] = ' '
     map_data[map_data == MapEnum.body.value ] = ' '
     map_data[snake_position[0][0]][snake_position[0][1]] = MapEnum.head.value
     for body_index in range(1, len(snake_position)):
         map_data[snake_position[body_index][0]][snake_position[body_index][1]] = MapEnum.body.value
-
-    if food_position is not None:
-        map_data[food_position[0], food_position[1]] = MapEnum.food.value
 
     return map_data
 
