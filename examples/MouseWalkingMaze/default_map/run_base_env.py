@@ -7,7 +7,7 @@ from stable_baselines import PPO2
 from stable_baselines.common.vec_env import  DummyVecEnv
 from stable_baselines.common.policies import MlpLnLstmPolicy
 
-tensorboard_folder = './tensorboard/base/'
+tensorboard_folder = './tensorboard/MouseWalkingMaze/base/'
 if not os.path.isdir(tensorboard_folder):
     os.makedirs(tensorboard_folder)
 

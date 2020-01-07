@@ -82,7 +82,8 @@ class BaseEnv(gym.Env):
             return 0
 
     def is_done(self, target_obj):
-        return self.current_step >= self.end_step or target_obj == MapEnum.body or target_obj == MapEnum.wall
+        return self.current_step >= self.end_step or target_obj == MapEnum.body or \
+            target_obj == MapEnum.wall or np.count_nonzero(self.map_data == ' ') < 5
 
     def compute_opposite_direction_of_previous_action(self):
         if self.previous_action == 0:
