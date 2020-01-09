@@ -9,17 +9,24 @@ from stable_baselines.common.vec_env import  DummyVecEnv
 from stable_baselines.common.policies import MlpLnLstmPolicy
 
 tensorboard_folder = './tensorboard/MouseWalkingMaze/negative_reward/'
+model_folder = './models/MouseWalkingMaze/negative_reward/'
 if not os.path.isdir(tensorboard_folder):
     os.makedirs(tensorboard_folder)
+if not os.path.isdir(model_folder):
+    os.makedirs(model_folder)
 
 env = DummyVecEnv([lambda: NegativeRewardEnv(map_name='map1')])
 
 model = PPO2(CustomCnnLnLstmPolicy, env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
 model.learn(total_timesteps=2500000)
 
-model.save("mouse_negative_reward")
+model_tag = ''
+if len(sys.argv) > 1:
+    model_tag = '_' + sys.argv[1]
+
+model.save(model_folder + "PPO2_CnnLnLstm" + model_tag)
 del model
-model = PPO2.load("mouse_negative_reward")
+model = PPO2.load(model_folder + "PPO2_CnnLnLstm" + model_tag)
 
 done = False
 states = None
