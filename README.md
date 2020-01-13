@@ -1,8 +1,10 @@
-# Mouse walking maze [[OpenAI Gym](https://gym.openai.com/)]
-<img src="./img/default_map.gif" align="right"/>
+# Console game [[OpenAI Gym](https://gym.openai.com/)]
 
 [![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/KennethTang/github/4)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
+
+## Mouse walking maze
+<img src="./img/default_map.gif" align="right"/>
 
 這是一個簡單的老鼠走迷宮 [OpenAI Gym](https://gym.openai.com/) 環境，這個環境包含了 3 種子環境:
 
@@ -12,7 +14,7 @@
 
 目的是為了驗證代理人受到環境的限制而出現大量的無效動作時，採用上述 ３ 種方法其效果如何。
 
-## [地圖資訊定義](./env/map_define.py)
+### [地圖資訊定義](./env/MouseWalkingMaze/map_define.py)
 ```
 道路 = ' '
 牆壁 = 'X'
@@ -21,6 +23,31 @@
 食物 = 'F'
 毒藥 = 'P'
 ```
+
+<br>
+
+## Snake
+<img src="./img/Snake.gif" align="right"/>
+
+這是一個簡單的貪食蛇 [OpenAI Gym](https://gym.openai.com/) 環境，這個環境包含了 ２ 種子環境:
+
+1. 發生無效動作時，不進行任何的獎勵給予或動作屏蔽 ([BaseEnv](./env/Snake/base_env.py))
+1. 發生無效動作時，使用動作遮罩屏蔽代理人的動作選擇 ([ActionMaskEnv](./env/Snake/action_mask_env.py))
+
+目的是為了驗證代理人受到環境的限制而出現大量的無效動作時，採用上述 2 種方法其效果如何。
+
+⚠️⚠️⚠️ Snake 環境僅支援: Windows, Mac
+
+### [地圖資訊定義](./env/Snake/map_define.py)
+```
+道路 = ' '
+牆壁 = '✤'
+蛇的頭 = '❖'
+蛇的身體 = '◉'
+食物 = '❦'
+```
+
+<br/>
 
 ## 如何使用
 
