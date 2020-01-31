@@ -53,7 +53,8 @@ def map_to_obs(map_data, shape):
     """
     Convert map data to neural network input formate.
 
-    : param map_data: (list) 整張地圖的集合
+    : param map_data:   (list)      整張地圖的集合
+    : param shape:      (obs_shape) 神經網路輸入的形狀
     """
     map_data = map_data.copy()
     map_data[map_data == MapEnum.road.value] = MapObsEnum.road.value
