@@ -3,7 +3,7 @@ import sys
 sys.path.append('./')
 
 from env.Snake.action_mask_env import ActionMaskEnv
-from stable_baselines import PPO2
+from stable_baselines import A2C
 from stable_baselines.common.vec_env import  DummyVecEnv
 from stable_baselines.common.policies import MlpPolicy
 from examples.MouseWalkingMaze.map1.custom_policy import CustomCnnLnLstmPolicy
@@ -17,16 +17,16 @@ if not os.path.isdir(model_folder):
 
 env = DummyVecEnv([lambda: ActionMaskEnv(10, 10)])
 
-model = PPO2(MlpPolicy, env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
+model = A2C(MlpPolicy, env, verbose=0, tensorboard_log=tensorboard_folder)
 model.learn(total_timesteps=10000000)
 
 model_tag = ''
 if len(sys.argv) > 1:
     model_tag = '_' + sys.argv[1]
 
-model.save(model_folder + "PPO2" + model_tag)
+model.save(model_folder + "A2C" + model_tag)
 del model
-model = PPO2.load(model_folder + "PPO2" + model_tag)
+model = A2C.load(model_folder + "A2C" + model_tag)
 
 done = False
 states = None
