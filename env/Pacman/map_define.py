@@ -9,6 +9,7 @@ class MapEnum(Enum):
          o - Capsule
          G - Ghost
          P - Pacman
+         F - fleeghost
     """
     road = ' '
     ghost = 'G'
@@ -16,6 +17,7 @@ class MapEnum(Enum):
     pacman = 'P'
     capsules = 'o'
     food = '.'
+    fleeghost = "F"
 
 
 class MapObsEnum(Enum):
@@ -28,3 +30,4 @@ class MapObsEnum(Enum):
     pacman = 3
     capsules = 4
     food = 5
+    fleeghost = 6

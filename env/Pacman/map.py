@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from env.Pacman.map_define import MapEnum, MapObsEnum
+from env.Pacman.map_define import MapEnum
 
 
 class Grid:
@@ -89,24 +89,15 @@ class Map:
         self.walls = Grid(self.width, self.height)
         self.processLayoutText(self.data)
 
-    @staticmethod
-    def toObservation(map_data, shape):
-        """
-        Convert map data to neural network input formate.
-
-        : param map_data:   (list)      整張地圖的集合
-        : param shape:      (obs_shape) 神經網路輸入的形狀
-        """
-        map_data = map_data.copy()
-        map_data[map_data == MapEnum.road.value] = MapObsEnum.road.value
-        map_data[map_data == MapEnum.ghost.value] = MapObsEnum.ghost.value
-        map_data[map_data == MapEnum.wall.value] = MapObsEnum.wall.value
-        map_data[map_data == MapEnum.pacman.value] = MapObsEnum.pacman.value
-        map_data[map_data ==
-                 MapEnum.capsules.value] = MapObsEnum.capsules.value
-        map_data[map_data == MapEnum.food.value] = MapObsEnum.food.value
-
-        return np.reshape(map_data.astype(np.float16), shape)
+    def deepCopy(self):
+        map = Map(self.map_name)
+        map.data = np.copy(self.data)
+        map.shape = self.shape
+        map.agentPositions = [(i, pos) for i, pos in self.agentPositions]
+        map.capsules = [(x, y) for x, y in self.capsules]
+        map.numGhosts = self.numGhosts
+        map.food = self.food.deepCopy()
+        return map
 
     def processLayoutText(self, layoutText):
         """

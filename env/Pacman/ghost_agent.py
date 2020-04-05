@@ -1,7 +1,8 @@
 from .utils import manhattanDistance, chooseFromDistribution, raiseNotDefined, Counter
+from .game import Actions, Directions
 
 
-class GhostAgent(Agent):
+class GhostAgent:
     def __init__(self, index):
         self.index = index
 

@@ -1,7 +1,8 @@
 import gym
 import numpy as np
+import os, time
 from .map import Map
-from .game import GhostRules, GameState
+from .game import GhostRules, GameState, Actions
 from .ghost_agent import DirectionalGhost
 
 
@@ -17,15 +18,15 @@ class BaseEnv(gym.Env):
         self.end_step = end_step
         self.state = GameState(self.map)
         self.ghostAgents = [
-            DirectionalGhost(i)
-            for i in range(1, len(self.state.getNumAgents()))
+            DirectionalGhost(i) for i in range(1, self.state.getNumAgents())
         ]
         self.action_space = gym.spaces.Discrete(4)
         self.obs_shape = (self.map.shape[0], self.map.shape[1], 1)
         self.observation_space = gym.spaces.Box(low=0,
-                                                high=5,
+                                                high=6,
                                                 shape=self.obs_shape,
                                                 dtype=np.float16)
+        self.reset()
 
     def reset(self):
         """
@@ -33,7 +34,6 @@ class BaseEnv(gym.Env):
         """
         self.state_cache = self.state.deepCopy()
         self.current_step = 0
-        return Map.toObservation(self.map_cache, self.obs_shape)
 
     def step(self, action):
         """
@@ -56,7 +56,15 @@ class BaseEnv(gym.Env):
 
         : param delay_time: (float) 每次打印要延遲的時間
         """
-        pass
+        # for windows
+        if os.name == 'nt':
+            _ = os.system('cls')
+        # for mac and linux(here, os.name is 'posix')
+        else:
+            _ = os.system('clear')
+
+        print(self.state_cache)
+        time.sleep(delay_time)
 
     def get_reward(self, action):
         """
@@ -66,7 +74,9 @@ class BaseEnv(gym.Env):
         self.state_cache.scoreChange = 0
 
         for ghost in self.ghostAgents:
-            GhostRules.applyAction(ghost.getAction(self.state_cache))
+            GhostRules.applyAction(self.state_cache,
+                                   ghost.getAction(self.state_cache),
+                                   ghost.index)
             GhostRules.decrementTimer(
                 self.state_cache.getGhostState(ghost.index))
 
@@ -77,7 +87,6 @@ class BaseEnv(gym.Env):
         """
         Check if this round is over.
 
-        : param target_obj: (MapEnum) 老鼠前方ㄧ格的物件
         """
         return self.current_step >= self.end_step or self.state_cache.isWin(
         ) or self.state_cache.isLose()
