@@ -1,5 +1,5 @@
-from .utils import manhattanDistance, chooseFromDistribution, raiseNotDefined, Counter
-from .game import Actions, Directions
+from env.Pacman.utils import manhattanDistance, chooseFromDistribution, raiseNotDefined, Counter
+from env.Pacman.game import Actions, Directions
 
 
 class GhostAgent:

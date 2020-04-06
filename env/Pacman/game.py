@@ -1,6 +1,6 @@
-from .utils import manhattanDistance, nearestPoint
-from .map import Map
-from .map_define import MapObsEnum, MapEnum
+from env.Pacman.utils import manhattanDistance, nearestPoint
+from env.Pacman.map import Map
+from env.Pacman.map_define import MapObsEnum, MapEnum
 import numpy as np
 
 SCARED_TIME = 40  # Moves ghosts are scared
@@ -87,7 +87,7 @@ class Actions:
     def getActionWithIndex(index):
         if index >= len(Actions._directionsAsList) or index < 0:
             raise Exception("Invalid action index!")
-        return Actions._directionsAsList[index]
+        return Actions._directionsAsList[index][0]
 
     @staticmethod
     def reverseDirection(action):
@@ -274,8 +274,8 @@ class PacmanRules:
         if (position in state.getCapsules()):
             state.layout.capsules.remove(position)
             # Reset all ghosts' scared timers
-            for index in range(1, len(state.layout.agentStates)):
-                state.layout.agentStates[index].scaredTimer = SCARED_TIME
+            for index in range(1, len(state.agentStates)):
+                state.agentStates[index].scaredTimer = SCARED_TIME
 
 
 class AgentState:

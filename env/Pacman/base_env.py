@@ -1,9 +1,11 @@
 import gym
 import numpy as np
 import os, time
-from .map import Map
-from .game import GhostRules, GameState, Actions
-from .ghost_agent import DirectionalGhost
+from env.Pacman.map import Map
+from env.Pacman.game import GhostRules, GameState, Actions
+from env.Pacman.ghost_agent import DirectionalGhost, RandomGhost
+import threading
+from pynput.keyboard import Key, Listener
 
 
 class BaseEnv(gym.Env):
@@ -13,7 +15,7 @@ class BaseEnv(gym.Env):
     : param map_name: (str) 要運行的地圖和相關資訊
     : param end_step: (int) 每個回合，最多可運行的步數
     """
-    def __init__(self, map_name='default_map', end_step=10000):
+    def __init__(self, map_name='default_map', end_step=1000):
         self.map = Map(map_name)
         self.end_step = end_step
         self.state = GameState(self.map)
@@ -50,7 +52,7 @@ class BaseEnv(gym.Env):
 
         return obs, reward, done, {}
 
-    def render(self, delay_time=1):
+    def render(self, delay_time=0.5):
         """
         Print environment.
 
@@ -64,6 +66,7 @@ class BaseEnv(gym.Env):
             _ = os.system('clear')
 
         print(self.state_cache)
+        print('score: {}'.format(self.state_cache.score))
         time.sleep(delay_time)
 
     def get_reward(self, action):
@@ -90,3 +93,35 @@ class BaseEnv(gym.Env):
         """
         return self.current_step >= self.end_step or self.state_cache.isWin(
         ) or self.state_cache.isLose()
+
+    def play(self):
+        from pynput import keyboard
+        from pynput.keyboard import Listener
+        self.action = 3
+
+        t = threading.Thread(target=self.listener)
+        t.daemon = True
+        t.start()
+
+        while (True):
+            self.reset()
+            while (not self.is_done()):
+                self.step(self.action)
+                self.render()
+            print("Your score: {}".format(self.state_cache.score))
+            time.sleep(5)
+
+    def listener(self):
+        def on_press(key):
+            global currently_pressed_key
+            if key == Key.up:
+                self.action = 0
+            elif key == Key.down:
+                self.action = 1
+            elif key == Key.right:
+                self.action = 2
+            elif key == Key.left:
+                self.action = 3
+
+        with Listener(on_press=on_press) as l:
+            l.join()
