@@ -5,7 +5,7 @@ sys.path.append('./')
 from env.MouseWalkingMaze.action_mask_env import ActionMaskEnv
 from stable_baselines import PPO2
 from stable_baselines.common.vec_env import  DummyVecEnv
-from stable_baselines.common.policies import MlpLnLstmPolicy
+from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/MouseWalkingMaze/action_mask/'
 model_folder = './models/MouseWalkingMaze/action_mask/'
@@ -14,18 +14,20 @@ if not os.path.isdir(tensorboard_folder):
 if not os.path.isdir(model_folder):
     os.makedirs(model_folder)
 
-env = DummyVecEnv([lambda: ActionMaskEnv()])
-
-model = PPO2(MlpLnLstmPolicy, env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=25000)
-
+policy = ''
 model_tag = ''
 if len(sys.argv) > 1:
+    policy = sys.argv[1]
     model_tag = '_' + sys.argv[1]
 
-model.save(model_folder + "PPO2_MlpLnLstm" + model_tag)
+env = DummyVecEnv([lambda: ActionMaskEnv()])
+
+model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
+model.learn(total_timesteps=25000)
+
+model.save(model_folder + "PPO2" + model_tag)
 del model
-model = PPO2.load(model_folder + "PPO2_MlpLnLstm" + model_tag)
+model = PPO2.load(model_folder + "PPO2" + model_tag)
 
 done = False
 states = None
