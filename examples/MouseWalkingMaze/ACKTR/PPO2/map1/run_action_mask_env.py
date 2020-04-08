@@ -3,10 +3,9 @@ import sys
 sys.path.append('./')
 
 from env.MouseWalkingMaze.action_mask_env import ActionMaskEnv
-from examples.MouseWalkingMaze.map1.custom_policy import CustomCnnLnLstmPolicy
 from stable_baselines import ACKTR
 from stable_baselines.common.vec_env import  DummyVecEnv
-from stable_baselines.common.policies import MlpLnLstmPolicy
+from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/MouseWalkingMaze/action_mask/'
 model_folder = './models/MouseWalkingMaze/action_mask/'
@@ -15,18 +14,20 @@ if not os.path.isdir(tensorboard_folder):
 if not os.path.isdir(model_folder):
     os.makedirs(model_folder)
 
-env = DummyVecEnv([lambda: ActionMaskEnv(map_name='map1')])
-
-model = ACKTR(CustomCnnLnLstmPolicy, env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=2500000)
-
+policy = ''
 model_tag = ''
 if len(sys.argv) > 1:
+    policy = sys.argv[1]
     model_tag = '_' + sys.argv[1]
 
-model.save(model_folder + "ACKTR_PPO2_CnnLnLstm" + model_tag)
+env = DummyVecEnv([lambda: ActionMaskEnv(map_name='map1')])
+
+model = ACKTR(get_policy(policy), env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
+model.learn(total_timesteps=2500000)
+
+model.save(model_folder + "ACKTR_PPO2_map1" + model_tag)
 del model
-model = ACKTR.load(model_folder + "ACKTR_PPO2_CnnLnLstm" + model_tag)
+model = ACKTR.load(model_folder + "ACKTR_PPO2_map1" + model_tag)
 
 done = False
 states = None

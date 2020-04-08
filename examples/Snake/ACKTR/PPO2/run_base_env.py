@@ -5,8 +5,7 @@ sys.path.append('./')
 from env.Snake.base_env import BaseEnv
 from stable_baselines import ACKTR
 from stable_baselines.common.vec_env import  DummyVecEnv
-from stable_baselines.common.policies import MlpPolicy
-from examples.MouseWalkingMaze.map1.custom_policy import CustomCnnLnLstmPolicy
+from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/Snake/base/'
 model_folder = './models/Snake/base/'
@@ -15,18 +14,20 @@ if not os.path.isdir(tensorboard_folder):
 if not os.path.isdir(model_folder):
     os.makedirs(model_folder)
 
-env = DummyVecEnv([lambda: BaseEnv(10, 10)])
-
-model = ACKTR(MlpPolicy, env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=10000000)
-
+policy = ''
 model_tag = ''
 if len(sys.argv) > 1:
+    policy = sys.argv[1]
     model_tag = '_' + sys.argv[1]
 
-model.save(model_folder + "ACKTR" + model_tag)
+env = DummyVecEnv([lambda: BaseEnv(10, 10)])
+
+model = ACKTR(get_policy(policy), env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
+model.learn(total_timesteps=10000000)
+
+model.save(model_folder + "ACKTR_PPO2" + model_tag)
 del model
-model = ACKTR.load(model_folder + "ACKTR" + model_tag)
+model = ACKTR.load(model_folder + "ACKTR_PPO2" + model_tag)
 
 done = False
 states = None
