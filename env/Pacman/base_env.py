@@ -5,7 +5,6 @@ from env.Pacman.map import Map
 from env.Pacman.game import GhostRules, GameState, Actions
 from env.Pacman.ghost_agent import DirectionalGhost, RandomGhost
 import threading
-from pynput.keyboard import Key, Listener
 
 
 class BaseEnv(gym.Env):
@@ -37,6 +36,8 @@ class BaseEnv(gym.Env):
         self.state_cache = self.state.deepCopy()
         self.current_step = 0
 
+        return self.state_cache.toObservation(self.obs_shape)
+
     def step(self, action):
         """
         Tell the environment which action to do.
@@ -44,9 +45,10 @@ class BaseEnv(gym.Env):
         : param action: (int) 要執行的動作
         """
         direction = Actions.getActionWithIndex(action)
-        reward = self.get_reward(direction)
+        reward = self.get_reward()
         done = self.is_done()
 
+        self.apply_action(direction)
         obs = self.state_cache.toObservation(self.obs_shape)
         self.current_step += 1
 
@@ -69,11 +71,14 @@ class BaseEnv(gym.Env):
         print('score: {}'.format(self.state_cache.score))
         time.sleep(delay_time)
 
-    def get_reward(self, action):
+    def get_reward(self):
         """
         Give rewards based on actions state.
 
         """
+        return self.state_cache.scoreChange
+
+    def apply_action(self, action):
         self.state_cache.scoreChange = 0
 
         for ghost in self.ghostAgents:
@@ -84,7 +89,6 @@ class BaseEnv(gym.Env):
                 self.state_cache.getGhostState(ghost.index))
 
         self.state_cache = self.state_cache.generateSuccessor(0, action)
-        return self.state_cache.scoreChange
 
     def is_done(self):
         """
