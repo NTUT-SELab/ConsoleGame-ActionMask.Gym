@@ -18,15 +18,10 @@ class BaseEnv(gym.Env):
         self.map = Map(map_name)
         self.end_step = end_step
         self.state = GameState(self.map)
-        self.ghostAgents = [
-            DirectionalGhost(i) for i in range(1, self.state.getNumAgents())
-        ]
+        self.ghostAgents = [DirectionalGhost(i) for i in range(1, self.state.getNumAgents())]
         self.action_space = gym.spaces.Discrete(4)
         self.obs_shape = (self.map.shape[0], self.map.shape[1], 1)
-        self.observation_space = gym.spaces.Box(low=0,
-                                                high=6,
-                                                shape=self.obs_shape,
-                                                dtype=np.float16)
+        self.observation_space = gym.spaces.Box(low=0, high=6, shape=self.obs_shape, dtype=np.float16)
         self.reset()
 
     def reset(self):
@@ -45,11 +40,10 @@ class BaseEnv(gym.Env):
         : param action: (int) 要執行的動作
         """
         direction = Actions.getActionWithIndex(action)
+        self.apply_action(direction)
         reward = self.get_reward()
         done = self.is_done()
 
-        if not done:
-            self.apply_action(direction)
         obs = self.state_cache.toObservation(self.obs_shape)
         self.current_step += 1
 
@@ -82,22 +76,18 @@ class BaseEnv(gym.Env):
     def apply_action(self, action):
         self.state_cache.scoreChange = 0
 
-        for ghost in self.ghostAgents:
-            GhostRules.applyAction(self.state_cache,
-                                   ghost.getAction(self.state_cache),
-                                   ghost.index)
-            GhostRules.decrementTimer(
-                self.state_cache.getGhostState(ghost.index))
-
         self.state_cache = self.state_cache.generateSuccessor(0, action)
+
+        for ghost in self.ghostAgents:
+            if not self.is_done():
+                self.state_cache = self.state_cache.generateSuccessor(ghost.index, ghost.getAction(self.state_cache))
 
     def is_done(self):
         """
         Check if this round is over.
 
         """
-        return self.current_step >= self.end_step or self.state_cache.isWin(
-        ) or self.state_cache.isLose()
+        return self.current_step >= self.end_step or self.state_cache.isWin() or self.state_cache.isLose()
 
     def play(self):
         from pynput import keyboard

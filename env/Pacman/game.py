@@ -120,7 +120,7 @@ class Actions:
         return (dx * speed, dy * speed)
 
     @staticmethod
-    def getPossibleActions(agentState, walls):
+    def getPossibleActions(agentState, walls, ghosts=[]):
         possible = []
         x, y = agentState.getPosition()
         x_int, y_int = int(x + 0.5), int(y + 0.5)
@@ -134,7 +134,15 @@ class Actions:
             next_y = y_int + dy
             next_x = x_int + dx
             if not walls[next_x][next_y]:
-                possible.append(dir)
+                if agentState.isPacman:
+                    for ghostState in ghosts:
+                        if (next_x,
+                            next_y) == nearestPoint(ghostState.configuration.pos) and ghostState.scaredTimer <= 1:
+                            break
+                    else:
+                        possible.append(dir)
+                else:
+                    possible.append(dir)
 
         return possible
 
@@ -150,8 +158,7 @@ class GhostRules:
         """
         agentState = state.getGhostState(ghostIndex)
 
-        possibleActions = Actions.getPossibleActions(agentState,
-                                                     state.layout.walls)
+        possibleActions = Actions.getPossibleActions(agentState, state.layout.walls)
 
         reverse = Actions.reverseDirection(agentState.getDirection())
         if Directions.STOP in possibleActions:
@@ -172,21 +179,18 @@ class GhostRules:
         if ghostState.scaredTimer > 0:
             speed /= 2.0
         vector = Actions.directionToVector(action, speed)
-        ghostState.configuration = ghostState.configuration.generateSuccessor(
-            vector)
+        ghostState.configuration = ghostState.configuration.generateSuccessor(vector)
 
     @staticmethod
     def decrementTimer(ghostState):
         timer = ghostState.scaredTimer
         if timer == 1:
-            ghostState.configuration.pos = nearestPoint(
-                ghostState.configuration.pos)
+            ghostState.configuration.pos = nearestPoint(ghostState.configuration.pos)
         ghostState.scaredTimer = max(0, timer - 1)
 
     @staticmethod
     def canKill(pacmanPosition, ghostPosition):
-        return manhattanDistance(ghostPosition,
-                                 pacmanPosition) <= COLLISION_TOLERANCE
+        return manhattanDistance(ghostPosition, pacmanPosition) <= COLLISION_TOLERANCE
 
     @staticmethod
     def checkDeath(state, agentIndex):
@@ -223,12 +227,18 @@ class PacmanRules:
     PACMAN_SPEED = 1.0
 
     @staticmethod
-    def getLegalActions(state):
+    def getLegalActions(state, has_ghost=False):
         """
         Returns a list of possible actions.
         """
-        return Actions.getPossibleActions(state.getPacmanState().configuration,
-                                          state.layout.walls)
+
+        if has_ghost:
+            return Actions.getPossibleActions(
+                state.getPacmanState(), state.layout.walls,
+                [state.getGhostState(i) for i in range(1, state.getNumAgents())]
+            )
+        else:
+            return Actions.getPossibleActions(state.getPacmanState(), state.layout.walls)
 
     @staticmethod
     def applyAction(state, action):
@@ -247,8 +257,7 @@ class PacmanRules:
 
         # Update Configuration
         vector = Actions.directionToVector(action, PacmanRules.PACMAN_SPEED)
-        pacmanState.configuration = pacmanState.configuration.generateSuccessor(
-            vector)
+        pacmanState.configuration = pacmanState.configuration.generateSuccessor(vector)
 
         # Eat
         next = pacmanState.configuration.getPosition()
@@ -315,8 +324,7 @@ class GameState:
     def __init__(self, layout):
         self.layout = layout
         self.agentStates = [
-            AgentState(Configuration(pos, Directions.STOP), isPacman)
-            for isPacman, pos in layout.agentPositions
+            AgentState(Configuration(pos, Directions.STOP), isPacman) for isPacman, pos in layout.agentPositions
         ]
         self.score = 0
         self.scoreChange = 0
@@ -341,6 +349,9 @@ class GameState:
     def getPacmanPosition(self):
         return self.agentStates[0].getPosition()
 
+    def getPacmanDirection(self):
+        return self.agentStates[0].getDirection()
+
     def deepCopy(self):
         layout = self.layout.deepCopy()
         state = GameState(layout)
@@ -357,8 +368,7 @@ class GameState:
     def reset(self):
         self.layout.reset()
         self.agentStates = [
-            AgentState(Configuration(pos, Directions.STOP), isPacman)
-            for isPacman, pos in layout.agentPositions
+            AgentState(Configuration(pos, Directions.STOP), isPacman) for isPacman, pos in layout.agentPositions
         ]
         self.score = 0
         self.scoreChange = 0
@@ -384,7 +394,7 @@ class GameState:
     def getNumAgents(self):
         return len(self.agentStates)
 
-    def getLegalActions(self, agentIndex=0):
+    def getLegalActions(self, agentIndex=0, has_ghost=False):
         """
         Returns the legal actions for the agent specified.
         """
@@ -393,7 +403,7 @@ class GameState:
             return []
 
         if agentIndex == 0:  # Pacman is moving
-            return PacmanRules.getLegalActions(self)
+            return PacmanRules.getLegalActions(self, has_ghost)
         else:
             return GhostRules.getLegalActions(self, agentIndex)
 
@@ -440,14 +450,11 @@ class GameState:
         for agentState in self.agentStates:
             pos = agentState.configuration.getPosition()
             if agentState.isPacman:
-                map_data[-1 - int(pos[1])][int(
-                    pos[0])] = MapObsEnum.pacman.value
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.pacman.value
             elif agentState.scaredTimer > 0:
-                map_data[-1 - int(pos[1])][int(
-                    pos[0])] = MapObsEnum.fleeghost.value
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.fleeghost.value
             else:
-                map_data[-1 - int(pos[1])][int(
-                    pos[0])] = MapObsEnum.ghost.value
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.ghost.value
 
         return np.reshape(map_data.astype(np.float16), shape)
 
@@ -464,11 +471,9 @@ class GameState:
             if agentState.isPacman:
                 map_data[-1 - int(pos[1])][int(pos[0])] = MapEnum.pacman.value
             elif agentState.scaredTimer > 0:
-                map_data[-1 - int(pos[1])][int(
-                    pos[0])] = MapEnum.fleeghost.value
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapEnum.fleeghost.value
             else:
                 map_data[-1 - int(pos[1])][int(pos[0])] = MapEnum.ghost.value
 
-        out = [[str(map_data[y][x])[0] for x in range(layout.width)]
-               for y in range(layout.height)]
+        out = [[str(map_data[y][x])[0] for x in range(layout.width)] for y in range(layout.height)]
         return '\n'.join([''.join(x) for x in out])
