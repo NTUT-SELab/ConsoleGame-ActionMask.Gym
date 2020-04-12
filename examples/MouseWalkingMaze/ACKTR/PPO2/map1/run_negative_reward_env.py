@@ -23,7 +23,7 @@ if len(sys.argv) > 1:
 env = DummyVecEnv([lambda: NegativeRewardEnv(map_name='map1')])
 
 model = ACKTR(get_policy(policy), env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=2500000)
+model.learn(total_timesteps=2500000, tb_log_name='ACKTR_PPO2_map1' + model_tag)
 
 model.save(model_folder + "ACKTR_PPO2_map1" + model_tag)
 del model

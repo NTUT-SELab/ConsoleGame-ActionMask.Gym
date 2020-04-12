@@ -23,7 +23,7 @@ if len(sys.argv) > 1:
 env = DummyVecEnv([lambda: BaseEnv(map_name='map1')])
 
 model = A2C(get_policy(policy), env, verbose=0, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=2500000)
+model.learn(total_timesteps=2500000, tb_log_name='A2C_map1' + model_tag)
 
 model.save(model_folder + "A2C_map1" + model_tag)
 del model
