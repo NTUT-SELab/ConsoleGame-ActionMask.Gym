@@ -40,4 +40,7 @@ class ActionMaskEnv(BaseEnv):
         if Directions.WEST not in legal:
             action_mask[3] = 0
 
+        if 1 not in action_mask:
+            action_mask = [1, 1, 1, 1]
+
         return action_mask
