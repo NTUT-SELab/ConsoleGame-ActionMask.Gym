@@ -48,7 +48,8 @@ class BaseEnv(gym.Env):
         reward = self.get_reward()
         done = self.is_done()
 
-        self.apply_action(direction)
+        if not done:
+            self.apply_action(direction)
         obs = self.state_cache.toObservation(self.obs_shape)
         self.current_step += 1
 
