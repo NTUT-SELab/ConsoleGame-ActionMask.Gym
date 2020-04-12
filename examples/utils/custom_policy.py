@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from stable_baselines.a2c.utils import conv, linear, conv_to_fc
+from stable_baselines.common.tf_layers import conv, linear, conv_to_fc
 from stable_baselines.common.policies import LstmPolicy, FeedForwardPolicy
 
 def modified_cnn(scaled_images, **kwargs):
