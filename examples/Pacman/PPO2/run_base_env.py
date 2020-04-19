@@ -20,11 +20,11 @@ if len(sys.argv) > 1:
     policy = sys.argv[1]
     model_tag = '_' + sys.argv[1]
 
-env = DummyVecEnv([lambda: BaseEnv()])
+env = DummyVecEnv([lambda: BaseEnv(map_name='default_map_2')])
 env = VecFrameStack(env, 3)
 
 model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=10000000)
+model.learn(total_timesteps=10000000, tb_log_name='PPO2' + model_tag)
 
 model.save(model_folder + "PPO2" + model_tag)
 del model
