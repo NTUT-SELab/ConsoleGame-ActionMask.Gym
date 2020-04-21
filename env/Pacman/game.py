@@ -1,5 +1,4 @@
 from env.Pacman.utils import manhattanDistance, nearestPoint
-from env.Pacman.map import Map
 from env.Pacman.map_define import MapObsEnum, MapEnum
 import numpy as np
 
@@ -29,6 +28,7 @@ class Configuration:
     The convention for positions, like a graph, is that (0,0) is the lower left corner, x increases
     horizontally and y increases vertically.  Therefore, north is the direction of increasing y, or (0,1).
     """
+
     def __init__(self, pos, direction):
         self.pos = pos
         self.direction = direction
@@ -44,7 +44,7 @@ class Configuration:
         return x == int(x) and y == int(y)
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         return (self.pos == other.pos and self.direction == other.direction)
 
@@ -288,6 +288,7 @@ class PacmanRules:
 
 
 class AgentState:
+
     def __init__(self, startConfiguration, isPacman=False):
         self.start = startConfiguration
         self.isPacman = isPacman
@@ -301,7 +302,7 @@ class AgentState:
             return "Ghost: " + str(self.configuration)
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         return self.configuration == other.configuration and self.scaredTimer == other.scaredTimer
 
@@ -312,7 +313,7 @@ class AgentState:
         return state
 
     def getPosition(self):
-        if self.configuration == None:
+        if self.configuration is None:
             return None
         return self.configuration.getPosition()
 
@@ -321,6 +322,7 @@ class AgentState:
 
 
 class GameState:
+
     def __init__(self, layout):
         self.layout = layout
         self.agentStates = [
@@ -368,7 +370,7 @@ class GameState:
     def reset(self):
         self.layout.reset()
         self.agentStates = [
-            AgentState(Configuration(pos, Directions.STOP), isPacman) for isPacman, pos in layout.agentPositions
+            AgentState(Configuration(pos, Directions.STOP), isPacman) for isPacman, pos in self.layout.agentPositions
         ]
         self.score = 0
         self.scoreChange = 0
@@ -435,9 +437,106 @@ class GameState:
 
         return self
 
+    def toObservationMatrix(self):
+        """
+        Convert map data to neural network input format.
+        """
+
+        def getWallMatrix(state):
+            """ Return matrix with wall coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            grid = state.layout.walls
+            matrix = np.zeros((height, width), dtype=np.int8)
+            for i in range(grid.height):
+                for j in range(grid.width):
+                    # Put cell vertically reversed in matrix
+                    cell = 1 if grid[j][i] else 0
+                    matrix[-1 - i][j] = cell
+            return matrix
+
+        def getPacmanMatrix(state):
+            """ Return matrix with pacman coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            matrix = np.zeros((height, width), dtype=np.int8)
+
+            for agentState in state.agentStates:
+                if agentState.isPacman:
+                    pos = agentState.configuration.getPosition()
+                    cell = 1
+                    matrix[-1 - int(pos[1])][int(pos[0])] = cell
+
+            return matrix
+
+        def getGhostMatrix(state):
+            """ Return matrix with ghost coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            matrix = np.zeros((height, width), dtype=np.int8)
+
+            for agentState in state.agentStates:
+                if not agentState.isPacman:
+                    if not agentState.scaredTimer > 0:
+                        pos = agentState.configuration.getPosition()
+                        cell = 1
+                        matrix[-1 - int(pos[1])][int(pos[0])] = cell
+
+            return matrix
+
+        def getScaredGhostMatrix(state):
+            """ Return matrix with ghost coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            matrix = np.zeros((height, width), dtype=np.int8)
+
+            for agentState in state.agentStates:
+                if not agentState.isPacman:
+                    if agentState.scaredTimer > 0:
+                        pos = agentState.configuration.getPosition()
+                        cell = 1
+                        matrix[-1 - int(pos[1])][int(pos[0])] = cell
+
+            return matrix
+
+        def getFoodMatrix(state):
+            """ Return matrix with food coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            grid = state.layout.food
+            matrix = np.zeros((height, width), dtype=np.int8)
+
+            for i in range(grid.height):
+                for j in range(grid.width):
+                    # Put cell vertically reversed in matrix
+                    cell = 1 if grid[j][i] else 0
+                    matrix[-1 - i][j] = cell
+
+            return matrix
+
+        def getCapsulesMatrix(state):
+            """ Return matrix with capsule coordinates set to 1 """
+            width, height = state.layout.width, state.layout.height
+            capsules = state.layout.capsules
+            matrix = np.zeros((height, width), dtype=np.int8)
+
+            for i in capsules:
+                # Insert capsule cells vertically reversed into matrix
+                matrix[-1 - i[1], i[0]] = 1
+
+            return matrix
+
+        observation = np.zeros((6, self.layout.height, self.layout.width))
+
+        observation[0] = getWallMatrix(self)
+        observation[1] = getPacmanMatrix(self)
+        observation[2] = getGhostMatrix(self)
+        observation[3] = getScaredGhostMatrix(self)
+        observation[4] = getFoodMatrix(self)
+        observation[5] = getCapsulesMatrix(self)
+
+        observation = np.swapaxes(observation, 0, 2)
+
+        return observation
+
     def toObservation(self, shape):
         """
-        Convert map data to neural network input formate.
+        Convert map data to neural network input format.
 
         : param shape:      (obs_shape) 神經網路輸入的形狀
         """

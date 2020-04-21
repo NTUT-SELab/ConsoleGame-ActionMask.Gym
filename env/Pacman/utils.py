@@ -1,5 +1,6 @@
 import inspect
 import random
+import sys
 
 
 def nearestPoint(pos):
@@ -108,6 +109,7 @@ class Counter(dict):
     subtracted or multiplied together.  See below for details.  They can
     also be normalized and their total count and arg max can be extracted.
     """
+
     def __getitem__(self, idx):
         self.setdefault(idx, 0)
         return dict.__getitem__(self, idx)
@@ -148,8 +150,7 @@ class Counter(dict):
         ['second', 'third', 'first']
         """
         sortedItems = list(self.items())
-        compare = lambda x, y: sign(y[1] - x[1])
-        sortedItems.sort(cmp=compare)
+        sortedItems.sort(cmp=lambda x, y: sign(y[1] - x[1]))
         return [x[0] for x in sortedItems]
 
     def totalCount(self):
@@ -283,6 +284,5 @@ def raiseNotDefined():
     line = inspect.stack()[1][2]
     method = inspect.stack()[1][3]
 
-    print(("*** Method not implemented: %s at line %s of %s" %
-           (method, line, fileName)))
+    print(("*** Method not implemented: %s at line %s of %s" % (method, line, fileName)))
     sys.exit(1)

@@ -1,8 +1,8 @@
 import gym
 import numpy as np
-import os, time
+import time
 from env.Pacman.map import Map
-from env.Pacman.game import GhostRules, GameState, Actions
+from env.Pacman.game import GameState, Actions
 from env.Pacman.ghost_agent import DirectionalGhost, RandomGhost
 import threading
 
@@ -14,13 +14,14 @@ class BaseEnv(gym.Env):
     : param map_name: (str) 要運行的地圖和相關資訊
     : param end_step: (int) 每個回合，最多可運行的步數
     """
+
     def __init__(self, map_name='default_map', end_step=1000):
         self.map = Map(map_name)
         self.end_step = end_step
         self.state = GameState(self.map)
         self.ghostAgents = [DirectionalGhost(i) for i in range(1, self.state.getNumAgents())]
         self.action_space = gym.spaces.Discrete(4)
-        self.obs_shape = (self.map.shape[0], self.map.shape[1], 1)
+        self.obs_shape = (self.state.layout.width, self.state.layout.height, 1)
         self.observation_space = gym.spaces.Box(low=0, high=6, shape=self.obs_shape, dtype=np.float16)
         self.reset()
 
@@ -107,6 +108,7 @@ class BaseEnv(gym.Env):
             time.sleep(5)
 
     def listener(self):
+
         def on_press(key):
             global currently_pressed_key
             if key == Key.up:
