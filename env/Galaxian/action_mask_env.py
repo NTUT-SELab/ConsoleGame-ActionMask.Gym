@@ -28,7 +28,7 @@ class ActionMaskEnv(BaseEnv):
         """
         Compute the set of action masks based on the current state
         """
-        action_mask = np.asarray([1, 1, 1])
+        action_mask = np.asarray([1, 1])
         right_end = self.map.width - 2
         left_end = 1   
         if is_done:
@@ -39,8 +39,8 @@ class ActionMaskEnv(BaseEnv):
         if self.galaxian.get_position()[1] == right_end:
             action_mask[1] = 0
 
-        if np.count_nonzero(action_mask == 0) == 3:
+        if np.count_nonzero(action_mask == 0) == 2:
             del action_mask
-            action_mask = np.asarray([1, 1, 1])
+            action_mask = np.asarray([1, 1])
 
         return action_mask
