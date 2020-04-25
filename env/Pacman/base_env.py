@@ -1,5 +1,6 @@
 import gym
 import numpy as np
+import os
 import time
 from env.Pacman.map import Map
 from env.Pacman.game import GameState, Actions
@@ -29,6 +30,7 @@ class BaseEnv(gym.Env):
         """
         Reset environment.
         """
+        self.state.reset()
         self.state_cache = self.state.deepCopy()
         self.current_step = 0
 
@@ -91,8 +93,6 @@ class BaseEnv(gym.Env):
         return self.current_step >= self.end_step or self.state_cache.isWin() or self.state_cache.isLose()
 
     def play(self):
-        from pynput import keyboard
-        from pynput.keyboard import Listener
         self.action = 3
 
         t = threading.Thread(target=self.listener)
@@ -108,9 +108,9 @@ class BaseEnv(gym.Env):
             time.sleep(5)
 
     def listener(self):
+        from pynput.keyboard import Listener, Key
 
         def on_press(key):
-            global currently_pressed_key
             if key == Key.up:
                 self.action = 0
             elif key == Key.down:
@@ -120,5 +120,5 @@ class BaseEnv(gym.Env):
             elif key == Key.left:
                 self.action = 3
 
-        with Listener(on_press=on_press) as l:
-            l.join()
+        with Listener(on_press=on_press) as li:
+            li.join()

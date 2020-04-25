@@ -376,7 +376,6 @@ class GameState:
         self.scoreChange = 0
         self._Win = False
         self._lose = False
-        return self.map_cache
 
     def getLayout(self):
         return self.layout

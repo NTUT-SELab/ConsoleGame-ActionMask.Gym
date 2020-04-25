@@ -4,13 +4,13 @@ from env.Pacman.map_define import MapEnum
 
 
 class Grid:
+
     def __init__(self, width, height, initialValue=False):
         if initialValue not in [False, True]:
             raise Exception('Grids can only contain booleans')
         self.width = width
         self.height = height
-        self.data = np.array([[initialValue for y in range(height)]
-                              for x in range(width)])
+        self.data = np.array([[initialValue for y in range(height)] for x in range(width)])
 
     def __getitem__(self, i):
         return self.data[i]
@@ -19,8 +19,7 @@ class Grid:
         self.data[key] = item
 
     def __str__(self):
-        out = [[str(self.data[x][y])[0] for x in range(self.width)]
-               for y in range(self.height)]
+        out = [[str(self.data[x][y])[0] for x in range(self.width)] for y in range(self.height)]
         out.reverse()
         return '\n'.join([''.join(x) for x in out])
 
@@ -66,6 +65,7 @@ class Map:
          P - Pacman
     : param map_name: (str) 地圖檔案名稱
     """
+
     def __init__(self, map_name):
         self.get_map(map_name)
 
@@ -83,6 +83,7 @@ class Map:
         self.width = len(self.data[0])
         self.height = len(self.data)
         self.agentPositions = []
+        self.pacmanPositions = []
         self.capsules = []
         self.numGhosts = 0
         self.food = Grid(self.width, self.height)
@@ -116,8 +117,12 @@ class Map:
             for x in range(self.width):
                 layoutChar = layoutText[maxY - y][x]
                 self.processLayoutChar(x, y, layoutChar)
+
+        self.agentPositions.append(self.pacmanPositions[np.random.choice(np.arange(len(self.pacmanPositions)))])
         self.agentPositions.sort()
         self.agentPositions = [(i == 0, pos) for i, pos in self.agentPositions]
+        x, y = self.agentPositions[0][1]
+        self.food[x][y] = False
 
     def processLayoutChar(self, x, y, layoutChar):
         if layoutChar == '%':
@@ -127,14 +132,14 @@ class Map:
         elif layoutChar == 'o':
             self.capsules.append((x, y))
         elif layoutChar == 'P':
-            self.agentPositions.append((0, (x, y)))
+            self.food[x][y] = True
+            self.pacmanPositions.append((0, (x, y)))
         elif layoutChar in ['G']:
             self.agentPositions.append((1, (x, y)))
             self.numGhosts += 1
 
     def __str__(self):
-        out = [[str(self.data[y][x])[0] for x in range(self.width)]
-               for y in range(self.height)]
+        out = [[str(self.data[y][x])[0] for x in range(self.width)] for y in range(self.height)]
         return '\n'.join([''.join(x) for x in out])
 
     def check_map(self, map_data):
@@ -152,17 +157,13 @@ class Map:
         if np.count_nonzero(map_data == MapEnum.pacman.value) == 0:
             raise Exception('There are no pacman in the map.')
 
-        if np.count_nonzero(
-                map_data.T[0] == MapEnum.wall.value) != map_data.shape[0]:
+        if np.count_nonzero(map_data.T[0] == MapEnum.wall.value) != map_data.shape[0]:
             raise Exception('There are holes in the left side of the map.')
-        if np.count_nonzero(
-                map_data.T[-1] == MapEnum.wall.value) != map_data.shape[0]:
+        if np.count_nonzero(map_data.T[-1] == MapEnum.wall.value) != map_data.shape[0]:
             raise Exception('There are holes in the left side of the map.')
-        if np.count_nonzero(
-                map_data[0] == MapEnum.wall.value) != map_data.shape[1]:
+        if np.count_nonzero(map_data[0] == MapEnum.wall.value) != map_data.shape[1]:
             raise Exception('There are holes in the upper side of the map.')
-        if np.count_nonzero(
-                map_data[-1] == MapEnum.wall.value) != map_data.shape[1]:
+        if np.count_nonzero(map_data[-1] == MapEnum.wall.value) != map_data.shape[1]:
             raise Exception('There are holes in the lower side of the map.')
 
         return map_data
