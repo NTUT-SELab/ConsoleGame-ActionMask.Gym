@@ -574,4 +574,4 @@ class GameState:
                 map_data[-1 - int(pos[1])][int(pos[0])] = MapEnum.ghost.value
 
         out = [[str(map_data[y][x])[0] for x in range(layout.width)] for y in range(layout.height)]
-        return '\n'.join([''.join(x) for x in out])
+        return '\n'.join([' '.join(x) for x in out])

@@ -26,7 +26,7 @@ class ActionMaskEnv(BaseEnv):
         Compute the set of action masks based on the current state
         """
         action_mask = [1, 1, 1, 1]
-        legal = self.state_cache.getLegalActions(0, True)
+        legal = self.state_cache.getLegalActions(0, False)
 
         if Directions.NORTH not in legal:
             action_mask[0] = 0

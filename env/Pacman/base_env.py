@@ -3,7 +3,7 @@ import numpy as np
 import os
 import time
 from env.Pacman.map import Map
-from env.Pacman.game import GameState, Actions
+from env.Pacman.game import Directions, GameState, Actions
 from env.Pacman.ghost_agent import DirectionalGhost, RandomGhost
 import threading
 
@@ -22,8 +22,8 @@ class BaseEnv(gym.Env):
         self.state = GameState(self.map)
         self.ghostAgents = [DirectionalGhost(i) for i in range(1, self.state.getNumAgents())]
         self.action_space = gym.spaces.Discrete(4)
-        self.obs_shape = (self.state.layout.width, self.state.layout.height, 1)
-        self.observation_space = gym.spaces.Box(low=0, high=6, shape=self.obs_shape, dtype=np.float16)
+        self.obs_shape = (self.state.layout.width, self.state.layout.height, 6)
+        self.observation_space = gym.spaces.Box(low=0, high=1, shape=self.obs_shape, dtype=np.float16)
         self.reset()
 
     def reset(self):
@@ -34,7 +34,7 @@ class BaseEnv(gym.Env):
         self.state_cache = self.state.deepCopy()
         self.current_step = 0
 
-        return self.state_cache.toObservation(self.obs_shape)
+        return self.state_cache.toObservationMatrix()
 
     def step(self, action):
         """
@@ -47,7 +47,7 @@ class BaseEnv(gym.Env):
         reward = self.get_reward()
         done = self.is_done()
 
-        obs = self.state_cache.toObservation(self.obs_shape)
+        obs = self.state_cache.toObservationMatrix()
         self.current_step += 1
 
         return obs, reward, done, {}
