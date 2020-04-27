@@ -412,6 +412,7 @@ class GameState:
         """
         Returns the successor state after the specified agent takes the action.
         """
+        self.scoreChange = 0
         # Check that successors exist
         if self.isWin() or self.isLose():
             raise Exception('Can\'t generate a successor of a terminal state.')

@@ -33,6 +33,8 @@ class BaseEnv(gym.Env):
         self.state.reset()
         self.state_cache = self.state.deepCopy()
         self.current_step = 0
+        self.last_score = 0
+        self.last_reward = 0
 
         return self.state_cache.toObservationMatrix()
 
@@ -74,11 +76,24 @@ class BaseEnv(gym.Env):
         Give rewards based on actions state.
 
         """
-        return self.state_cache.scoreChange
+        reward = self.state_cache.score - self.last_score
+        self.last_score = self.state_cache.score
+
+        if reward > 20:
+            self.last_reward = 50.  # Eat ghost   (Yum! Yum!)
+        elif reward > 0:
+            self.last_reward = 10.  # Eat food    (Yum!)
+        elif reward < -10:
+            self.last_reward = -500.  # Get eaten   (Ouch!) -500
+        elif reward < 0:
+            self.last_reward = -1.  # Punish time (Pff..)
+
+        if (self.state_cache.isWin()):
+            self.last_reward = 100.
+
+        return self.last_reward
 
     def apply_action(self, action):
-        self.state_cache.scoreChange = 0
-
         self.state_cache = self.state_cache.generateSuccessor(0, action)
 
         for ghost in self.ghostAgents:
