@@ -50,7 +50,7 @@ class BaseEnv(gym.Env):
         """
 
         reward = self.get_reward()
-        done = False
+        done = self.is_done()
         self.previous_enemy_numbers = len(self.enemies)
         self.galaxian.move(action)
         self.bonus.reactivate()
