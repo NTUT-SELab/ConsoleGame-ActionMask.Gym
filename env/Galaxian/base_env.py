@@ -14,7 +14,7 @@ class BaseEnv(gym.Env):
     : param width:  (int) 地圖寬度
     : end_step:     (int) 遊戲最長步數
     """
-    def __init__(self, high=50, width=40, end_step=10000):
+    def __init__(self, high=30, width=30, end_step=10000):
         self.map = Map(high, width)
         self.end_step = end_step
 
