@@ -46,14 +46,18 @@ class Enemy(MapElement):
     def __init__(self, position, map):
         super().__init__(position, map)
         self.approach_progress = 0
+        self.approach_complete_steps_steps = self.calculate_approach_complete_steps()
         self.symbol = MapEnum.enemy.value
 
     def move(self):
-        if self.approach_progress < 6:
+        if self.approach_progress < self.approach_complete_steps_steps:
             self.approach_progress += 1
         else:
             self.approach_progress = 0
             self.position[0] += 1
+    
+    def calculate_approach_complete_steps(self):
+        return int(self.map.width / 2.5)
 
 class Bullet(MapElement):
     def __init__(self, position, map):
