@@ -2,6 +2,7 @@ import gym
 import os
 import time
 import numpy as np
+
 from env.Galaxian import utils
 from env.Galaxian.map_define import *
 from env.Galaxian.map import Map
@@ -119,6 +120,7 @@ class BaseEnv(gym.Env):
 
         : param generate_food: (bool) 刷新地圖時是否產生食物
         """
+        self.map.refresh()
         utils.disable_rewarded_enemies_and_bullets(self.bullets, self.enemies, self.map.data)
         utils.disable_rewarded_bonus_and_bullet(self.bullets, self.bonus)
         utils.remove_disable_elements(self.bullets)

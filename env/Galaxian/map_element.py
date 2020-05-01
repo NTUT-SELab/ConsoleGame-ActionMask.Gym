@@ -16,7 +16,7 @@ class MapElement:
         return self.symbol
 
     def move(self):
-        self.map.refresh()
+        pass
 
     def is_active(self):
         return self.status
@@ -37,7 +37,6 @@ class Galaxian(MapElement):
         # Right
         if action == 1 and self.position[1] < width - 2:
             self.position[1] += 1
-        MapElement.move(self)
 
     def fire(self):
         position = self.position.copy()
@@ -55,7 +54,6 @@ class Enemy(MapElement):
         else:
             self.approach_progress = 0
             self.position[0] += 1
-        MapElement.move(self)
 
 class Bullet(MapElement):
     def __init__(self, position, map):
@@ -66,7 +64,6 @@ class Bullet(MapElement):
         self.position[0] -= 1
         if self.position[0] == 0:
             self.disable()
-        MapElement.move(self)
     
 class Bonus(MapElement):
     def __init__(self, position, map):
@@ -86,7 +83,6 @@ class Bonus(MapElement):
         else:
             self.position[1] += 1
 
-        MapElement.move(self)
 
     def change_direction(self): 
         left_end = 1
