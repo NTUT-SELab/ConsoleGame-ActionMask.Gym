@@ -23,7 +23,7 @@ class BaseEnv(gym.Env):
         self.ghostAgents = [DirectionalGhost(i) for i in range(1, self.state.getNumAgents())]
         self.action_space = gym.spaces.Discrete(4)
         self.obs_shape = (self.state.layout.width, self.state.layout.height, 6)
-        self.observation_space = gym.spaces.Box(low=0, high=1, shape=self.obs_shape, dtype=np.float16)
+        self.observation_space = gym.spaces.Box(low=0, high=1, shape=self.obs_shape, dtype=np.int8)
         self.reset()
 
     def reset(self):

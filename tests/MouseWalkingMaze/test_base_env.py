@@ -5,8 +5,10 @@ from env.MouseWalkingMaze import utils
 from env.MouseWalkingMaze.base_env import BaseEnv
 from env.MouseWalkingMaze.map_define import MapEnum
 
+
 def setup_function():
     pytest.env = BaseEnv(map_name='map1', end_step=100)
+
 
 def test_reset():
     pytest.env.map_cache = None
@@ -14,6 +16,7 @@ def test_reset():
     map_data = utils.load_map('map1')
 
     np.testing.assert_array_equal(pytest.env.reset(), utils.map_to_obs(map_data, pytest.env.obs_shape))
+
 
 def test_eat_food():
     pytest.env.reset()
@@ -25,6 +28,7 @@ def test_eat_food():
     _, reward, _, _ = pytest.env.step(0)
 
     assert reward == 2
+
 
 def test_eat_poison():
     pytest.env.reset()
@@ -45,6 +49,7 @@ def test_eat_poison():
 
     assert reward == -1
 
+
 def test_invalid_action():
     pytest.env.reset()
     pytest.env.step(0)
@@ -52,12 +57,18 @@ def test_invalid_action():
 
     np.testing.assert_array_equal(pytest.env.map_cache, pytest.env.map)
 
-@pytest.mark.parametrize('test_data', [[MapEnum.food, 2], [MapEnum.poison, -1], [MapEnum.exit, 1], [MapEnum.road, 0], [MapEnum.wall, 0]])
+
+@pytest.mark.parametrize(
+    'test_data', [[MapEnum.food, 2], [MapEnum.poison, -1], [MapEnum.exit, 1], [MapEnum.road, 0], [MapEnum.wall, 0]]
+)
 def test_reward(test_data):
     assert pytest.env.get_reward(test_data[0]) == test_data[1]
 
+
 @pytest.mark.parametrize('current_step', [5, 100])
-@pytest.mark.parametrize('target_obj', [MapEnum.road, MapEnum.wall, MapEnum.exit, MapEnum.mouse, MapEnum.food, MapEnum.poison])
+@pytest.mark.parametrize(
+    'target_obj', [MapEnum.road, MapEnum.wall, MapEnum.exit, MapEnum.mouse, MapEnum.food, MapEnum.poison]
+)
 def test_is_done(current_step, target_obj):
     pytest.env.current_step = current_step
 
