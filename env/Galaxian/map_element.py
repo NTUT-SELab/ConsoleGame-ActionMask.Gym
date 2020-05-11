@@ -46,11 +46,11 @@ class Enemy(MapElement):
     def __init__(self, position, map):
         super().__init__(position, map)
         self.approach_progress = 0
-        self.approach_complete_steps_steps = self.calculate_approach_complete_steps()
+        self.approach_complete_steps = self.calculate_approach_complete_steps()
         self.symbol = MapEnum.enemy.value
 
     def move(self):
-        if self.approach_progress < self.approach_complete_steps_steps:
+        if self.approach_progress < self.approach_complete_steps:
             self.approach_progress += 1
         else:
             self.approach_progress = 0
