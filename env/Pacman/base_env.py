@@ -3,8 +3,8 @@ import numpy as np
 import os
 import time
 from env.Pacman.map import Map
-from env.Pacman.game import Directions, GameState, Actions
-from env.Pacman.ghost_agent import DirectionalGhost, RandomGhost
+from env.Pacman.game import GameState, Actions
+from env.Pacman.ghost_agent import DirectionalGhost  # , RandomGhost
 import threading
 
 
@@ -54,7 +54,7 @@ class BaseEnv(gym.Env):
 
         return obs, reward, done, {}
 
-    def render(self, delay_time=0.5):
+    def render(self, delay_time=0.5, pause=False):
         """
         Print environment.
 
@@ -68,7 +68,7 @@ class BaseEnv(gym.Env):
             _ = os.system('clear')
 
         print(self.state_cache)
-        print('score: {}'.format(self.state_cache.score))
+        print('score: {}'.format(self.state_cache.score) if not pause else "Pause")
         time.sleep(delay_time)
 
     def get_reward(self):
@@ -116,9 +116,11 @@ class BaseEnv(gym.Env):
 
         while (True):
             self.reset()
+            self.pause = False
             while (not self.is_done()):
-                self.step(self.action)
-                self.render()
+                if not self.pause:
+                    self.step(self.action)
+                self.render(pause=self.pause)
             print("Your score: {}".format(self.state_cache.score))
             time.sleep(5)
 
@@ -134,6 +136,8 @@ class BaseEnv(gym.Env):
                 self.action = 2
             elif key == Key.left:
                 self.action = 3
+            elif key == Key.esc:
+                self.pause = not self.pause
 
         with Listener(on_press=on_press) as li:
             li.join()

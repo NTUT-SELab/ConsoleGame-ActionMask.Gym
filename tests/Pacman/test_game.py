@@ -1,5 +1,6 @@
 import pytest
 from env.Pacman.game import Directions, Configuration, Actions, GameState, GhostRules, PacmanRules, AgentState
+import numpy as np
 
 
 def test_directions():
@@ -111,3 +112,50 @@ def test_game_state(state: GameState):
     with pytest.raises(Exception) as ex:
         state.getGhostState(0)
     assert 'Invalid index' in str(ex.value)
+
+    assert not state.getGhostState(1).isPacman
+
+    with pytest.raises(Exception) as ex:
+        state.getGhostPosition(0)
+    assert 'Invalid index' in str(ex.value)
+
+    assert state.getGhostPosition(1) is not None
+
+    assert state.getPacmanState().isPacman
+
+    assert state.getPacmanPosition() == state.getPacmanState().getPosition()
+
+    assert state.getPacmanDirection() == state.getPacmanState().getDirection()
+
+    assert str(state.deepCopy()) == str(state)
+
+    copy = state.deepCopy()
+    copy.generateSuccessor(0, "East")
+
+    assert str(copy) != str(state)
+
+    # test win and lose
+    with pytest.raises(Exception) as ex:
+        state._win = True
+        state.generateSuccessor(0, "East")
+
+    assert "Can\'t generate a successor of a terminal state." in str(ex.value)
+
+    state.reset()
+    # test win and lose
+    with pytest.raises(Exception) as ex:
+        state._lose = True
+        state.generateSuccessor(0, "East")
+
+    assert "Can\'t generate a successor of a terminal state." in str(ex.value)
+
+    state.reset()
+    assert state.getLegalActions(0, True) == ["South", "East", "West", "Stop"]
+    assert state.getLegalActions(1) == ["East"]
+
+    state.reset()
+
+    assert np.sum(state.toObservationMatrix()
+                 ) == state.getNumFood() + state.getNumAgents() + state.layout.walls.count() + len(state.getCapsules())
+
+    assert state.toObservation((-1, 1)).shape == (state.layout.shape[0] * state.layout.shape[1], 1)
