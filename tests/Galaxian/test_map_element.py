@@ -33,10 +33,10 @@ def test_galaxian_fire():
 
 def test_enemy_cal_approach_steps():
     steps = int(pytest.map.high / 2.5)
-    assert pytest.enemy.approach_complete_steps_steps == steps
+    assert pytest.enemy.approach_complete_steps == steps
 
 def test_move_enemy():
-    for i in range(pytest.enemy.approach_complete_steps_steps + 1):
+    for i in range(pytest.enemy.approach_complete_steps + 1):
         pytest.enemy.move()
     assert pytest.enemy.get_position() == [4,6]
     assert pytest.enemy.approach_progress == 0
