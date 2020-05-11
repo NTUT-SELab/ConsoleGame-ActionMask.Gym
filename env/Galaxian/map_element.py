@@ -57,7 +57,7 @@ class Enemy(MapElement):
             self.position[0] += 1
     
     def calculate_approach_complete_steps(self):
-        return int(self.map.width / 2.5)
+        return int(self.map.high / 2.5)
 
 class Bullet(MapElement):
     def __init__(self, position, map):
