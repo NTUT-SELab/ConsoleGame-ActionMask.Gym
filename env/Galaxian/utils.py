@@ -63,9 +63,10 @@ def disable_rewarded_bonus_and_bullet(bullets, bonus):
             bullet.disable()
 
 def remove_disable_elements(elements):
-    for element in elements:
-        if not element.is_active():
-            elements.remove(element)
+    while any([element.is_active() == False for element in elements]):
+        for element in elements:
+            if not element.is_active():
+                elements.remove(element)
 
 def map_to_obs(map_data, shape):
     """

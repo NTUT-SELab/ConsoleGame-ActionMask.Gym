@@ -42,11 +42,18 @@ def test_disable_rewarded_enemies_and_bullets():
 def test_remove_disable_elements():
     enemies = utils.generate_enemies(pytest.map)
     enemies[0].disable()
+    enemies[1].disable()
+
     assert len(enemies) == 21
     assert enemies[0].get_position() == [3, 2]
+    assert enemies[1].get_position() == [3, 3]
+
     utils.remove_disable_elements(enemies)
-    assert len(enemies) == 20
-    assert enemies[0].get_position() == [3, 3]
+    assert len(enemies) == 19
+
+    assert enemies[0].get_position() == [3, 4]
+    assert enemies[1].get_position() == [3, 5]
+
 
 def test_disable_rewarded_bonus_and_bullet():
     bonus = Bonus([1, 5], pytest.map)
