@@ -35,8 +35,8 @@ def test_reset():
     assert np.count_nonzero(obs == 5) == 1
 
 def test_move_bullets():
-    pytest.env.bullets.append(Bullet([3, 3], pytest.env.map))
-    pytest.env.bullets.append(Bullet([5, 6], pytest.env.map))
+    pytest.env.bullets.append(Bullet([3, 3], pytest.env.map.high, pytest.env.map.width))
+    pytest.env.bullets.append(Bullet([5, 6], pytest.env.map.high, pytest.env.map.width))
     assert pytest.env.bullets[0].get_position() == [3, 3]
     assert pytest.env.bullets[1].get_position() == [5, 6]
     pytest.env.move_bullets()  

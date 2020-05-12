@@ -5,10 +5,10 @@ from env.Galaxian.map import *
 
 def setup_function():
     pytest.map = Map(11, 11)
-    pytest.galaxian = Galaxian([7,6], pytest.map)
-    pytest.enemy = Enemy([3,6], pytest.map)
-    pytest.bullet = Bullet([4,4], pytest.map)
-    pytest.bonus = Bonus([1,5], pytest.map)
+    pytest.galaxian = Galaxian([7,6], pytest.map.high, pytest.map.width)
+    pytest.enemy = Enemy([3,6], pytest.map.high, pytest.map.width)
+    pytest.bullet = Bullet([4,4], pytest.map.high, pytest.map.width)
+    pytest.bonus = Bonus([1,5], pytest.map.high, pytest.map.width)
 
 def test_get_position():
     assert pytest.galaxian.get_position() == [7,6]
@@ -26,7 +26,7 @@ def test_galaxian_move():
     assert pytest.galaxian.get_position() == [7,6]
 
 def test_galaxian_fire():
-    test_bullet = Bullet(pytest.galaxian.get_position(), pytest.map)
+    test_bullet = Bullet(pytest.galaxian.get_position(), pytest.map.high, pytest.map.width)
     fired_bullet = pytest.galaxian.fire()
     assert type(fired_bullet) == type(test_bullet)
     assert fired_bullet.get_position() == test_bullet.get_position()

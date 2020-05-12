@@ -22,8 +22,8 @@ def test_generate_bonus():
 def test_disable_rewarded_enemies_and_bullets():
     enemies = utils.generate_enemies(pytest.map)
     bullets = []
-    bullets.append(Bullet(enemies[8].get_position().copy(), pytest.map))
-    bullets.append(Bullet(enemies[16].get_position().copy(), pytest.map))
+    bullets.append(Bullet(enemies[8].get_position().copy(), pytest.map.high, pytest.map.width))
+    bullets.append(Bullet(enemies[16].get_position().copy(), pytest.map.high, pytest.map.width))
 
     pytest.map.add_elements(enemies)
     pytest.map.refresh()
@@ -56,9 +56,9 @@ def test_remove_disable_elements():
 
 
 def test_disable_rewarded_bonus_and_bullet():
-    bonus = Bonus([1, 5], pytest.map)
+    bonus = Bonus([1, 5], pytest.map.high, pytest.map.width)
     bullets = []
-    bullets.append(Bullet([1, 5], pytest.map))
+    bullets.append(Bullet([1, 5], pytest.map.high, pytest.map.width))
     
     assert bonus.is_active()
     assert bullets[0].is_active()
