@@ -18,7 +18,7 @@ def test_step(action_mask: ActionMaskEnv):
     assert mask == {'action_mask': [0, 1, 1, 1]}
 
     obs, reward, done, mask = action_mask.step(3)
-    assert reward == -1
+    assert reward == 0
     assert action_mask.state_cache.getPacmanDirection() == 'West'
     assert mask == {'action_mask': [0, 0, 1, 1]}
 

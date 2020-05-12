@@ -22,7 +22,7 @@ def test_step(base_env: BaseEnv):
     assert base_env.state_cache.getPacmanDirection() == 'East'
 
     obs, reward, done, _ = base_env.step(3)
-    assert reward == -1
+    assert reward == 0
     assert base_env.state_cache.getPacmanDirection() == 'West'
 
 
@@ -35,5 +35,5 @@ def test_render(base_env: BaseEnv):
 
 def test_get_reward(base_env: BaseEnv):
     obs, reward, done, _ = base_env.step(3)
-    assert reward == -1
-    assert base_env.get_reward() == -1
+    assert reward == 0
+    assert base_env.get_reward() == 0
