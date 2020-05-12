@@ -24,9 +24,9 @@ class Grid:
         return '\n'.join([''.join(x) for x in out])
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
-        return self.data == other.data
+        return (self.data == other.data).all()
 
     def copy(self):
         g = Grid(self.width, self.height)
@@ -160,7 +160,7 @@ class Map:
         if np.count_nonzero(map_data.T[0] == MapEnum.wall.value) != map_data.shape[0]:
             raise Exception('There are holes in the left side of the map.')
         if np.count_nonzero(map_data.T[-1] == MapEnum.wall.value) != map_data.shape[0]:
-            raise Exception('There are holes in the left side of the map.')
+            raise Exception('There are holes in the right side of the map.')
         if np.count_nonzero(map_data[0] == MapEnum.wall.value) != map_data.shape[1]:
             raise Exception('There are holes in the upper side of the map.')
         if np.count_nonzero(map_data[-1] == MapEnum.wall.value) != map_data.shape[1]:

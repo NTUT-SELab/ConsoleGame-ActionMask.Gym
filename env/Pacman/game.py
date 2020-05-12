@@ -330,7 +330,7 @@ class GameState:
         ]
         self.score = 0
         self.scoreChange = 0
-        self._Win = False
+        self._win = False
         self._lose = False
 
     def getGhostState(self, agentIndex):
@@ -359,7 +359,7 @@ class GameState:
         state = GameState(layout)
         state.score = self.score
         state.scoreChange = self.scoreChange
-        state._win = self._Win
+        state._win = self._win
         state._lose = self._lose
         state.agentStates = []
         for agentState in self.agentStates:
@@ -374,7 +374,7 @@ class GameState:
         ]
         self.score = 0
         self.scoreChange = 0
-        self._Win = False
+        self._win = False
         self._lose = False
 
     def getLayout(self):
@@ -387,7 +387,7 @@ class GameState:
         return self.layout.capsules
 
     def isWin(self):
-        return self._Win
+        return self._win
 
     def isLose(self):
         return self._lose
@@ -521,7 +521,7 @@ class GameState:
 
             return matrix
 
-        observation = np.zeros((6, self.layout.height, self.layout.width))
+        observation = np.zeros((6, self.layout.height, self.layout.width), dtype=np.int8)
 
         observation[0] = getWallMatrix(self)
         observation[1] = getPacmanMatrix(self)

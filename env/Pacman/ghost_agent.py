@@ -3,6 +3,7 @@ from env.Pacman.game import Actions, Directions
 
 
 class GhostAgent:
+
     def __init__(self, index):
         self.index = index
 
@@ -48,26 +49,19 @@ class DirectionalGhost(GhostAgent):
         if isScared:
             speed = 0.5
 
-        actionVectors = [
-            Actions.directionToVector(a, speed) for a in legalActions
-        ]
+        actionVectors = [Actions.directionToVector(a, speed) for a in legalActions]
         newPositions = [(pos[0] + a[0], pos[1] + a[1]) for a in actionVectors]
         pacmanPosition = state.getPacmanPosition()
 
         # Select best actions given the state
-        distancesToPacman = [
-            manhattanDistance(pos, pacmanPosition) for pos in newPositions
-        ]
+        distancesToPacman = [manhattanDistance(pos, pacmanPosition) for pos in newPositions]
         if isScared:
             bestScore = max(distancesToPacman)
             bestProb = self.prob_scaredFlee
         else:
             bestScore = min(distancesToPacman)
             bestProb = self.prob_attack
-        bestActions = [
-            action for action, distance in zip(legalActions, distancesToPacman)
-            if distance == bestScore
-        ]
+        bestActions = [action for action, distance in zip(legalActions, distancesToPacman) if distance == bestScore]
 
         # Construct distribution
         dist = Counter()
