@@ -2,6 +2,7 @@ import gym
 import os
 import time
 import numpy as np
+import threading
 
 from env.Galaxian import utils
 from env.Galaxian.map_define import *
@@ -41,6 +42,8 @@ class BaseEnv(gym.Env):
         self.previous_enemy_numbers = len(self.enemies)
         self.refresh_map()
         self.current_step = 0
+        self.score = 0
+
         return utils.map_to_obs(self.map.data, self.obs_shape)
 
     def step(self, action):
@@ -63,10 +66,11 @@ class BaseEnv(gym.Env):
         obs = utils.map_to_obs(self.map.data, self.obs_shape)
         self.previous_action = action
         self.current_step += 1
+        self.score += self.get_reward()
 
         return obs, reward, done, {}
 
-    def render(self, delay_time=0.5):
+    def render(self, delay_time=0.5, pause=False):
         """
         Print environment.
 
@@ -81,7 +85,7 @@ class BaseEnv(gym.Env):
         
         for rows in self.map.data:
             print(' '.join(rows))
-
+        print('score: {}'.format(self.score) if not pause else "Pause")
         time.sleep(delay_time)
 
 
@@ -146,3 +150,34 @@ class BaseEnv(gym.Env):
             if enemy.get_position()[0] == self.galaxian.get_position()[0]:
                 return True
         return False
+
+    def play(self):
+        self.action = None
+
+        t = threading.Thread(target=self.listener)
+        t.daemon = True
+        t.start()
+
+        while (True):
+            self.reset()
+            self.pause = False
+            while (not self.is_done()):
+                if not self.pause:
+                    self.step(self.action)
+                self.render(pause=self.pause)
+            print("Your score: {}".format(self.score))
+            time.sleep(5)
+
+    def listener(self):
+        from pynput.keyboard import Listener, Key
+
+        def on_press(key):
+            if key == Key.left:
+                self.action = 0
+            elif key == Key.right:
+                self.action = 1
+            elif key == Key.esc:
+                self.pause = not self.pause
+
+        with Listener(on_press=on_press) as li:
+            li.join()
