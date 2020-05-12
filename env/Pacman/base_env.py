@@ -113,11 +113,18 @@ class BaseEnv(gym.Env):
         t = threading.Thread(target=self.listener)
         t.daemon = True
         t.start()
+        self.stop = False
 
         while (True):
             self.reset()
             self.pause = False
+            if self.stop:
+                break
+
             while (not self.is_done()):
+                if self.stop:
+                    break
+
                 if not self.pause:
                     self.step(self.action)
                 self.render(pause=self.pause)
@@ -138,6 +145,9 @@ class BaseEnv(gym.Env):
                 self.action = 3
             elif key == Key.esc:
                 self.pause = not self.pause
+            elif key == Key.delete:
+                self.stop = True
+                return False
 
         with Listener(on_press=on_press) as li:
             li.join()

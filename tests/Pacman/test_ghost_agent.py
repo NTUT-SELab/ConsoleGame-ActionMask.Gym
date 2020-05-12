@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from env.Pacman import utils
 
 

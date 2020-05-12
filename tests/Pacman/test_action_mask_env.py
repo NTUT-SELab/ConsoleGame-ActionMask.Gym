@@ -1,5 +1,5 @@
 from env.Pacman.action_mask_env import ActionMaskEnv
-import mock
+from unittest import mock
 
 
 def test_action_mask(action_mask: ActionMaskEnv):

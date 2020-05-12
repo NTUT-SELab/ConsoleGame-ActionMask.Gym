@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 from env.Pacman import base_env as base_env_py
 from env.Pacman.base_env import BaseEnv
 
