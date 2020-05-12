@@ -14,7 +14,7 @@ def generate_galaxian(map):
     map_bottom = high - 2
     map_center = int(width / 2)
     position = [map_bottom, map_center]
-    galaxian = Galaxian(position, map)
+    galaxian = Galaxian(position, high, width)
 
     return galaxian
 
@@ -32,12 +32,12 @@ def generate_enemies(map):
     enemies = []
     for row in range(rows_of_enimies):
         for column in range(columns_of_enimies):
-            enemies.append(Enemy([row + 3, column + 2], map))
+            enemies.append(Enemy([row + 3, column + 2], high, width))
 
     return enemies
 
 def generate_bonus(map):
-    return Bonus([2, rnd.randint(1, map.width - 2)], map)
+    return Bonus([2, rnd.randint(1, map.width - 2)], map.high, map.width)
 
 def disable_rewarded_enemies_and_bullets(bullets, enemies, map_data):
     enemies_position = np.array(np.where(map_data == MapEnum.enemy.value)).T.tolist()

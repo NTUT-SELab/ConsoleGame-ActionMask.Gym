@@ -3,11 +3,12 @@ import random as rnd
 from env.Galaxian.map_define import *
 
 class MapElement:
-    def __init__(self, position, map):
+    def __init__(self, position, map_high, map_width):
         self.position = position
         self.status = True
         self.symbol = None
-        self.map = map
+        self.map_high = map_high
+        self.map_width = map_width
 
     def get_position(self):
         return self.position
@@ -25,12 +26,12 @@ class MapElement:
         self.status = False
 
 class Galaxian(MapElement):
-    def __init__(self, position, map):
-        super().__init__(position, map)
+    def __init__(self, position, map_high, map_width):
+        super().__init__(position, map_high, map_width)
         self.symbol = MapEnum.galaxian.value
 
     def move(self, action):
-        width = self.map.width
+        width = self.map_width
         #Left
         if action == 0 and self.position[1] > 1:
             self.position[1] -= 1
@@ -40,11 +41,11 @@ class Galaxian(MapElement):
 
     def fire(self):
         position = self.position.copy()
-        return (Bullet(position, self.map))
+        return (Bullet(position, self.map_high, self.map_width))
 
 class Enemy(MapElement):
-    def __init__(self, position, map):
-        super().__init__(position, map)
+    def __init__(self, position, map_high, map_width):
+        super().__init__(position, map_high, map_width)
         self.approach_progress = 0
         self.approach_complete_steps = self.calculate_approach_complete_steps()
         self.symbol = MapEnum.enemy.value
@@ -57,11 +58,11 @@ class Enemy(MapElement):
             self.position[0] += 1
     
     def calculate_approach_complete_steps(self):
-        return int(self.map.high / 2.5)
+        return int(self.map_high / 2.5)
 
 class Bullet(MapElement):
-    def __init__(self, position, map):
-        super().__init__(position, map)
+    def __init__(self, position, map_high, map_width):
+        super().__init__(position, map_high, map_width)
         self.symbol = MapEnum.bullet.value
 
     def move(self):
@@ -70,8 +71,8 @@ class Bullet(MapElement):
             self.disable()
     
 class Bonus(MapElement):
-    def __init__(self, position, map):
-        super().__init__(position, map)
+    def __init__(self, position, map_high, map_width):
+        super().__init__(position, map_high, map_width)
         self.symbol = MapEnum.bonus.value
         self.direction = rnd.choice([-1, 1])
         self.activate_progress = 0
@@ -90,7 +91,7 @@ class Bonus(MapElement):
 
     def change_direction(self): 
         left_end = 1
-        right_end = self.map.width - 2
+        right_end = self.map_width - 2
 
         # AT THE LEFT END
         if self.position[1] == left_end:
@@ -101,6 +102,6 @@ class Bonus(MapElement):
 
     def reactivate(self):
         if not self.status:
-            self.position[1] = rnd.randint(1, self.map.width - 2)
+            self.position[1] = rnd.randint(1, self.map_width - 2)
             self.status = True
 
