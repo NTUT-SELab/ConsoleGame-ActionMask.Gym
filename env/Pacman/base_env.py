@@ -86,7 +86,7 @@ class BaseEnv(gym.Env):
         elif reward < -10:
             self.last_reward = -500.  # Get eaten   (Ouch!) -500
         elif reward < 0:
-            self.last_reward = -1.  # Punish time (Pff..)
+            self.last_reward = 0.  # Punish time (Pff..)
 
         if (self.state_cache.isWin()):
             self.last_reward = 100.

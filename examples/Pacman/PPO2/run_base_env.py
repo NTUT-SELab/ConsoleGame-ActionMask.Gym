@@ -4,7 +4,7 @@ sys.path.append('./')
 
 from env.Pacman.base_env import BaseEnv
 from stable_baselines import PPO2
-from stable_baselines.common.vec_env import DummyVecEnv, VecFrameStack
+from stable_baselines.common.vec_env import SubprocVecEnv, VecFrameStack
 from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/Pacman/base/'
@@ -20,21 +20,22 @@ if len(sys.argv) > 1:
     policy = sys.argv[1]
     model_tag = '_' + sys.argv[1]
 
-env = DummyVecEnv([lambda: BaseEnv(map_name='default_map_2')])
-env = VecFrameStack(env, 3)
+if __name__ == '__main__':
+    env = SubprocVecEnv([lambda: BaseEnv() for i in range(4)])
+    env = VecFrameStack(env, 3)
 
-model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=10000000, tb_log_name='PPO2' + model_tag)
+    model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
+    model.learn(total_timesteps=100000000, tb_log_name='PPO2' + model_tag)
 
-model.save(model_folder + "PPO2" + model_tag)
-del model
-model = PPO2.load(model_folder + "PPO2" + model_tag)
+    model.save(model_folder + "PPO2" + model_tag)
+    del model
+    model = PPO2.load(model_folder + "PPO2" + model_tag)
 
-done = False
-states = None
-obs = env.reset()
+    done = False
+    states = None
+    obs = env.reset()
 
-while not done:
-    action, states = model.predict(obs, states)
-    obs, _, done, info = env.step(action)
-    env.render()
+    while not done:
+        action, states = model.predict(obs, states)
+        obs, _, done, info = env.step(action)
+        env.render()

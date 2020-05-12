@@ -4,7 +4,7 @@ sys.path.append('./')
 
 from env.Pacman.action_mask_env import ActionMaskEnv
 from stable_baselines import PPO2
-from stable_baselines.common.vec_env import SubprocVecEnv, VecFrameStack
+from stable_baselines.common.vec_env import DummyVecEnv, VecFrameStack
 from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/Pacman/action_mask/'
@@ -21,22 +21,17 @@ if len(sys.argv) > 1:
     model_tag = '_' + sys.argv[1]
 
 if __name__ == '__main__':
-    env = SubprocVecEnv([lambda: ActionMaskEnv() for i in range(4)])
+    env = DummyVecEnv([lambda: ActionMaskEnv() for i in range(4)])
     env = VecFrameStack(env, 3)
 
-    model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-    model.learn(total_timesteps=100000000, tb_log_name='PPO2' + model_tag)
-
-    model.save(model_folder + "PPO2" + model_tag)
-    del model
     model = PPO2.load(model_folder + "PPO2" + model_tag)
 
-    done = False
+    done = [False, False, False, False]
     states = None
     action_masks = []
     obs = env.reset()
 
-    while not done:
+    while not done[0]:
         action, states = model.predict(obs, states, action_mask=action_masks)
         obs, _, done, infos = env.step(action)
         env.render()
