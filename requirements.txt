@@ -1,0 +1,14 @@
+pynput
+gym
+scipy
+joblib
+cloudpickle
+opencv-python
+numpy
+pandas
+matplotlib
+pytest
+pytest-cov
+pytest-env
+pytest-xdist
+pytype
