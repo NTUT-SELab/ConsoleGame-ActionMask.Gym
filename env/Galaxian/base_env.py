@@ -64,7 +64,6 @@ class BaseEnv(gym.Env):
         self.move_bullets()
         self.refresh_map()
         obs = utils.map_to_obs(self.map.data, self.obs_shape)
-        self.previous_action = action
         self.current_step += 1
         self.score += self.get_reward()
 

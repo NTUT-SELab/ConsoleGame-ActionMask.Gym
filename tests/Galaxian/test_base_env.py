@@ -69,3 +69,24 @@ def test_get_reward():
     pytest.env.enemies[0].position = pytest.env.galaxian.position
     assert pytest.env.get_reward() == 5
 
+def test_step():
+    #Galaxian = 2, Bullet = 4, Bonus = 5
+    original_obs = pytest.env.reset()
+    original_enemy_approach_progress = pytest.env.enemies[0].approach_progress
+    number_of_bullets = len(pytest.env.bullets)
+    original_steps = pytest.env.current_step
+    
+    new_obs, _, _, _ = pytest.env.step(1)
+    galaxain_step_result = np.array(np.where(new_obs == 2)) - np.array(np.where(original_obs == 2))
+    bullet_step_result = np.array(np.where(new_obs == 4)) - np.array(np.where(new_obs == 2))
+    bonus_step_result = np.array(np.where(new_obs == 5)) - np.array(np.where(original_obs == 5))
+
+    np.testing.assert_array_equal(galaxain_step_result, np.array([[0], [1], [0]]))
+    np.testing.assert_array_equal(bullet_step_result, np.array([[-1], [0], [0]]))
+    
+    #BONUS MOVE TOWARD RANDOM DIRECTION, RESULT MIGHT BE 1 OR -1
+    assert np.array_equal(bonus_step_result, np.array([[0], [1], [0]])) or np.array_equal(bonus_step_result, np.array([[0], [-1], [0]]))
+    
+    assert len(pytest.env.bullets) - number_of_bullets == 1
+    assert pytest.env.current_step - original_steps == 1
+    assert pytest.env.enemies[0].approach_progress - original_enemy_approach_progress == 1
