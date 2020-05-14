@@ -44,3 +44,6 @@ def test_compute_action_mask():
     action_mask = pytest.env.compute_action_mask(False)
     np.testing.assert_array_equal(action_mask, [1, 0])
 
+    action_mask = pytest.env.compute_action_mask(True)
+    np.testing.assert_array_equal(action_mask, [1, 1])
+    

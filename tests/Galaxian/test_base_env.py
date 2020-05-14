@@ -1,6 +1,8 @@
 import pytest
 
+from unittest import mock
 from env.Galaxian.base_env import BaseEnv
+from env.Galaxian import base_env as base_env_py
 from env.Galaxian.map_element import *
 from env.Galaxian.map import *
 
@@ -90,3 +92,9 @@ def test_step():
     assert len(pytest.env.bullets) - number_of_bullets == 1
     assert pytest.env.current_step - original_steps == 1
     assert pytest.env.enemies[0].approach_progress - original_enemy_approach_progress == 1
+
+def test_render():
+    with mock.patch.object(base_env_py.time, "sleep") as mock_sleep:
+        pytest.env.render(10000)
+
+    assert mock_sleep.call_args[0][0] == 10000

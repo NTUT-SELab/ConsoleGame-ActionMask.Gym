@@ -47,13 +47,21 @@ def test_move_enemy():
 def test_move_bullet():
     pytest.bullet.move()
     assert pytest.bullet.get_position() == [3,4]
+    assert pytest.bullet.is_active()
 
+    pytest.bullet.position[0] = 1
+    pytest.bullet.move()
+    assert not pytest.bullet.is_active()
+    
 def test_move_bonus():
     pytest.bonus.move()
     if pytest.bonus.direction == -1:
         assert pytest.bonus.get_position() == [1, 4]
     elif pytest.bonus.direction == 1:
         assert pytest.bonus.get_position() == [1, 6]
+
+    pytest.bonus.disable()
+    assert pytest.bonus.position == [1, 4] or pytest.bonus.position == [1, 6]
 
 def test_bonus_change_direction():
     left_end = 1
