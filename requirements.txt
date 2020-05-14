@@ -12,3 +12,4 @@ pytest-cov
 pytest-env
 pytest-xdist
 pytype
+pysimplegui
