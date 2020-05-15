@@ -98,3 +98,19 @@ def test_render():
         pytest.env.render(10000)
 
     assert mock_sleep.call_args[0][0] == 10000
+
+def test_map_to_string():
+    pytest.env.bonus.position[1] = 1
+    pytest.env.map.refresh()
+    string_map = "X X X X X X X X X X X\n" \
+                 "X                   X\n" \
+                 "X B                 X\n" \
+                 "X   E E E E E E E   X\n" \
+                 "X   E E E E E E E   X\n" \
+                 "X   E E E E E E E   X\n" \
+                 "X                   X\n" \
+                 "X                   X\n" \
+                 "X                   X\n" \
+                 "X         G         X\n" \
+                 "X X X X X X X X X X X\n"
+    assert pytest.env.map_to_string() == string_map
