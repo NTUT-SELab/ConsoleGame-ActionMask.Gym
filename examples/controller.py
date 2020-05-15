@@ -1,9 +1,10 @@
-from env.Pacman.base_env import BaseEnv
+from env.Pacman.base_env import BaseEnv as PacmanBaseEnv
+from env.Galaxian.base_env import BaseEnv as GalaxianBaseEnv
 import threading
 import time
 
 
-class PacmanGame(BaseEnv):
+class PacmanGame(PacmanBaseEnv):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,6 +49,53 @@ class PacmanGame(BaseEnv):
                 self.action = 2
             elif key == Key.left:
                 self.action = 3
+            elif key == Key.esc:
+                self.pause = not self.pause
+            elif key == Key.delete:
+                self.stop = True
+                return False
+
+        with Listener(on_press=on_press) as li:
+            li.join()
+
+class GalaxianGame(GalaxianBaseEnv):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reset()
+    def play(self, textBox, textScore):
+        self.action = None
+
+        threading.Thread(target=self.listener, daemon=True).start()
+        self.stop = False
+        self.reset()
+        self.pause = False
+
+        while (not self.is_done()):
+            if self.stop:
+                break
+
+            if not self.pause:
+                self.step(self.action)
+                textBox.update(str(self.map_to_string()))
+                textScore.update('Your score is ' + str(self.score))
+            else:
+                textScore.update('Pause')
+            time.sleep(0.5)
+
+        if self.is_done():
+            textScore.update(f'Game Over, score: {self.score}')
+
+        print("Your score: {}".format(self.score))
+
+    def listener(self):
+        from pynput.keyboard import Listener, Key
+
+        def on_press(key):
+            if key == Key.left:
+                self.action = 0
+            elif key == Key.right:
+                self.action = 1
             elif key == Key.esc:
                 self.pause = not self.pause
             elif key == Key.delete:
