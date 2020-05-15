@@ -5,11 +5,11 @@ class MapEnum(Enum):
     Define the symbol represented by each object in the map.
     """
     space = ' '
-    wall = '✤'
-    galaxian = '♚'
-    enemy = '❦'
-    bullet = '*'
-    bonus = '☀'
+    wall = 'X'
+    galaxian = 'G'
+    enemy = 'E'
+    bullet = 'o'
+    bonus = 'B'
 
 class MapObsEnum(Enum):
     """

@@ -149,3 +149,9 @@ class BaseEnv(gym.Env):
             if enemy.get_position()[0] == self.galaxian.get_position()[0]:
                 return True
         return False
+
+    def map_to_string(self):
+        state = ''
+        for rows in self.map.data:
+            state += ' '.join(rows) + '\n'
+        return state

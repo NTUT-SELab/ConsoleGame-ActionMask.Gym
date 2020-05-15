@@ -17,7 +17,7 @@ def test_generate_enemies():
 
 def test_generate_bonus():
     bonus = utils.generate_bonus(pytest.map)
-    assert bonus.get_symbol() == '☀'
+    assert bonus.get_symbol() == 'B'
 
 def test_disable_rewarded_enemies_and_bullets():
     enemies = utils.generate_enemies(pytest.map)
