@@ -11,7 +11,7 @@ class ActionMaskEnv(BaseEnv):
     : param width:  (int) 地圖寬度
     : end_step:     (int) 遊戲最長步數
     """
-    def __init__(self, high=50, width=40, end_step=10000):
+    def __init__(self, high=30, width=30, end_step=10000):
         super().__init__(high, width, end_step)
 
     def step(self, action):
