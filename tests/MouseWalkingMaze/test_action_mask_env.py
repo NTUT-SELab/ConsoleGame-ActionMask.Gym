@@ -3,8 +3,10 @@ import numpy as np
 
 from env.MouseWalkingMaze.action_mask_env import ActionMaskEnv
 
+
 def setup_function():
     pytest.env = ActionMaskEnv(map_name='map1', end_step=100)
+
 
 def test_eat_food():
     pytest.env.reset()

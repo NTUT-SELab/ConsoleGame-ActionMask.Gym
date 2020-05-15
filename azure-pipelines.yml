@@ -1,11 +1,31 @@
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
   DOCKER_IMAGE: ntutselab/stable-baselines-cpu:latest
 
 jobs:
-- template: azure_templates/tests.yml
-  parameters:
-    name: 'AllTest'
-    DOCKER_IMAGE: $(DOCKER_IMAGE)
+- job: 'Ubuntu'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - template: azure_templates/ubuntu_tests.yml
+    parameters:
+      DOCKER_IMAGE: $(DOCKER_IMAGE)
+
+- job: 'Windows'
+  pool:
+    vmImage: 'windows-latest'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+  steps:
+    - template: azure_templates/windows_tests.yml
+
+- job: 'MacOS'
+  pool:
+    vmImage: 'macOS-latest'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+  steps:
+    - template: azure_templates/macos_tests.yml

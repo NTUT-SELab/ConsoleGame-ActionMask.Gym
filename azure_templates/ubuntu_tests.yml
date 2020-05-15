@@ -1,0 +1,11 @@
+steps:
+- template: docker_steps.yml
+  parameters:
+    DOCKER_IMAGE: ${{ parameters.DOCKER_IMAGE }}
+- script: ./scripts/run_tests_CI.sh
+  displayName: 'Run test'
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
