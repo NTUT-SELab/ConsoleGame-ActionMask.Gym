@@ -66,6 +66,7 @@ class UI:
             )
         elif game == 'Galaxian':
             pass
+
         time.sleep(3)
         webbrowser.open("http://localhost:6006")
 
