@@ -58,11 +58,13 @@ class PacmanGame(PacmanBaseEnv):
         with Listener(on_press=on_press) as li:
             li.join()
 
+
 class GalaxianGame(GalaxianBaseEnv):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reset()
+
     def play(self, textBox, textScore):
         self.action = None
 

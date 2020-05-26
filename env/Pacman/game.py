@@ -368,7 +368,10 @@ class GameState:
         return state
 
     def reset(self):
-        self.layout.reset()
+        if self._win:
+            self.layout.reset()
+        else:
+            self.layout.reset_except_food()
         self.agentStates = [
             AgentState(Configuration(pos, Directions.STOP), isPacman) for isPacman, pos in self.layout.agentPositions
         ]

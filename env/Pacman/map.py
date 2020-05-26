@@ -179,3 +179,10 @@ class Map:
         map_cache = np.copy(self.data)
         self.get_map(self.map_name)
         return map_cache
+
+    def reset_except_food(self):
+        map_cache = self.deepCopy()
+        self.get_map(self.map_name)
+        self.food = map_cache.food
+
+        return self

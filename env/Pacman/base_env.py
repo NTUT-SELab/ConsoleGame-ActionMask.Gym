@@ -19,6 +19,7 @@ class BaseEnv(gym.Env):
         self.map = Map(map_name)
         self.end_step = end_step
         self.state = GameState(self.map)
+        self.state_cache = self.state.deepCopy()
         self.ghostAgents = [DirectionalGhost(i) for i in range(1, self.state.getNumAgents())]
         self.action_space = gym.spaces.Discrete(4)
         self.obs_shape = (self.state.layout.width, self.state.layout.height, 6)
@@ -29,8 +30,7 @@ class BaseEnv(gym.Env):
         """
         Reset environment.
         """
-        self.state.reset()
-        self.state_cache = self.state.deepCopy()
+        self.state_cache.reset()
         self.current_step = 0
         self.last_score = 0
         self.last_reward = 0
