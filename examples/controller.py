@@ -1,7 +1,67 @@
 from env.Pacman.base_env import BaseEnv as PacmanBaseEnv
 from env.Galaxian.base_env import BaseEnv as GalaxianBaseEnv
+from env.Bomberman.base_env import BaseEnv as BombermanBaseEnv
 import threading
 import time
+
+
+class BombermanGame(BombermanBaseEnv):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def play(self, textBox, textScore):
+        self.action = 4
+
+        threading.Thread(target=self.listener, daemon=True).start()
+        self.stop = False
+
+        self.reset()
+        self.pause = False
+
+        while (not self.is_done()):
+            if self.stop:
+                break
+
+            if not self.pause:
+                self.step(self.action)
+                self.action = 4
+                textBox.update(str(self.state))
+                textScore.update('Your score is ' + str(self.state.score))
+            else:
+                textScore.update('Pause')
+
+            time.sleep(0.5)
+
+        if self.state.is_win():
+            textScore.update(f'You Win, score: {self.state.score}')
+        else:
+            textScore.update(f'Game Over, score: {self.state.score}')
+
+        print("Your score: {}".format(self.state.score))
+
+    def listener(self):
+        from pynput.keyboard import Listener, Key
+
+        def on_press(key):
+            if key == Key.up:
+                self.action = 0
+            elif key == Key.down:
+                self.action = 1
+            elif key == Key.right:
+                self.action = 2
+            elif key == Key.left:
+                self.action = 3
+            elif key == Key.space:
+                self.action = 5
+            elif key == Key.esc:
+                self.pause = not self.pause
+            elif key == Key.delete:
+                self.stop = True
+                return False
+
+        with Listener(on_press=on_press) as li:
+            li.join()
 
 
 class PacmanGame(PacmanBaseEnv):
@@ -58,11 +118,13 @@ class PacmanGame(PacmanBaseEnv):
         with Listener(on_press=on_press) as li:
             li.join()
 
+
 class GalaxianGame(GalaxianBaseEnv):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reset()
+
     def play(self, textBox, textScore):
         self.action = None
 
