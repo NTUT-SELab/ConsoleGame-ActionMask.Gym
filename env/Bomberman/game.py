@@ -227,7 +227,7 @@ class Bomb:
 
         for agent in agents:
             if agent.get_position() == position:
-                if agent.is_bomberman:
+                if agent.is_bomberman and not state.is_win() and not state.is_lose():
                     # lose
                     state.score -= 500
                     state.score_item.append(-500)
@@ -237,7 +237,7 @@ class Bomb:
                     state.score += 200
                     state.score_item.append(200)
                     state.agent_states.remove(agent)
-                    if len(state.agent_states) == 1:
+                    if len(state.agent_states) == 1 and not state.is_win() and not state.is_lose():
                         state.score += 500
                         state.score_item.append(500)
                         state._win = True
@@ -287,14 +287,15 @@ class EnemyRules:
             for index in range(1, len(state.agent_states)):
                 enemy_state = state.agent_states[index]
                 enemy_position = enemy_state.get_position()
-                if EnemyRules.canKill(bomberman_position, enemy_position):
+                if EnemyRules.canKill(bomberman_position,
+                                      enemy_position) and not state.is_win() and not state.is_lose():
                     state.score -= 500
                     state.score_item.append(-500)
                     state._lose = True
         else:
             enemy_state = state.agent_states[agent_index]
             enemy_position = enemy_state.get_position()
-            if EnemyRules.canKill(bomberman_position, enemy_position) and not state._win:
+            if EnemyRules.canKill(bomberman_position, enemy_position) and not state.is_win() and not state.is_lose():
                 state.score -= 500
                 state.score_item.append(-500)
                 state._lose = True

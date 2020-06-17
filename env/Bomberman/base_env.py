@@ -97,7 +97,8 @@ class BaseEnv(gym.Env):
                 if not self.is_done():
                     self.state.generate_successor(index, EnemyAgents.get_action(index, self.state))
 
-        self.state.generate_successor(0, action)
+        if not self.is_done():
+            self.state.generate_successor(0, action)
 
     def is_done(self):
         """
