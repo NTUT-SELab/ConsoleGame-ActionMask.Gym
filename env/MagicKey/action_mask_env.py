@@ -38,6 +38,9 @@ class ActionMaskEnv(BaseEnv):
         for i in range(65,91):
             [active_action.append(i-65) if (chr(i) in element.texts) & (element.is_game_end()) \
                                         else None for element in self.map.elements]
+        
+        if self.map.data[self.map.high-2, 1] != ' ':
+            action_mask.append(26)
 
         for action in active_action:
             action_mask[action] = 1
