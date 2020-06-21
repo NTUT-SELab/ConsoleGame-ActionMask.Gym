@@ -67,6 +67,7 @@ def map_to_obs(map_data, shape):
     text_pos =  (np.where(np.char.isalpha(map_data)))
     for i in range(len(text_pos[0])):
         map_data[text_pos[0][i], text_pos[1][i]] = ord(map_data[text_pos[0][i], text_pos[1][i]]) - 65
+    
     map_data[map_data == MapEnum.space.value] = MapObsEnum.space.value
     map_data[map_data == MapEnum.wall.value] = MapObsEnum.wall.value
     map_data[map_data == MapEnum.ballon_vedge.value] = MapObsEnum.ballon_vedge.value
@@ -75,7 +76,9 @@ def map_to_obs(map_data, shape):
     map_data[map_data == MapEnum.weapon_edge.value] = MapObsEnum.weapon_edge.value
     map_data[map_data == MapEnum.line_of_defense.value] = MapObsEnum.line_of_defense.value
     map_data[map_data == MapEnum.wizard.value] = MapObsEnum.wizard.value
-    
+
+    for power in range(1, 7):
+        map_data[map_data == str(power)] = int(power) + 34
 
     return np.reshape(map_data.astype(np.float16), shape)
 
