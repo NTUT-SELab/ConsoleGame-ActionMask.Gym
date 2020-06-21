@@ -40,7 +40,7 @@ class ActionMaskEnv(BaseEnv):
                                         else None for element in self.map.elements]
         
         if self.map.data[self.map.high-2, 1] != ' ':
-            action_mask.append(26)
+            active_action.append(26)
 
         for action in active_action:
             action_mask[action] = 1
