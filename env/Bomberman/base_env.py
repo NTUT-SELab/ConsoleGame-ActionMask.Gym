@@ -42,6 +42,8 @@ class BaseEnv(gym.Env):
         action = Actions.get_action_with_index(action_index)
         self.apply_action(action)
         reward = self.get_reward()
+        if action == 'Bomb':
+            reward = 0.01
         done = self.is_done()
 
         obs = self.state.to_observation()
@@ -78,16 +80,16 @@ class BaseEnv(gym.Env):
                 _reward += 10.  # Blow up brick
 
             elif reward == 200:
-                _reward += 200.  # Kill enemy
+                _reward += 20.  # Kill enemy
 
             elif reward < -10:
-                _reward += -500.  # Dead  (Ouch!) -500
+                _reward += -50.  # Dead  (Ouch!) -500
 
             elif reward == 500:
-                _reward += 500.  # Win kill all enemies
+                _reward += 50.  # Win kill all enemies
 
         if _reward == 0:
-            _reward = 0.  # Punish time (Pff..)
+            _reward = -0.01  # Punish time (Pff..)
 
         return _reward
 
