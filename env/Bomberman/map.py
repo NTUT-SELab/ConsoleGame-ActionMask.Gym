@@ -150,7 +150,7 @@ class Map:
 
         return map_data
 
-    def isWall(self, pos):
+    def is_wall(self, pos):
         x, col = pos
         return self.walls[x][col]
 
