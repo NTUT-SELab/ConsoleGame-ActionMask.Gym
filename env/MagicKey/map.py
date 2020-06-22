@@ -55,7 +55,7 @@ class Map:
                     return True
                 else:
                     element.disable()
-                    return False
+        return False
 
     def refresh(self):
         del self.data
