@@ -277,7 +277,7 @@ class EnemyRules:
         enemy.configuration = enemy.configuration.generate_successor(vector)
 
     @staticmethod
-    def canKill(bomberman_position, enemy_position):
+    def can_kill(bomberman_position, enemy_position):
         return manhattanDistance(bomberman_position, enemy_position) <= COLLISION_TOLERANCE
 
     @staticmethod
@@ -287,15 +287,15 @@ class EnemyRules:
             for index in range(1, len(state.agent_states)):
                 enemy_state = state.agent_states[index]
                 enemy_position = enemy_state.get_position()
-                if EnemyRules.canKill(bomberman_position,
-                                      enemy_position) and not state.is_win() and not state.is_lose():
+                if EnemyRules.can_kill(bomberman_position,
+                                       enemy_position) and not state.is_win() and not state.is_lose():
                     state.score -= 500
                     state.score_item.append(-500)
                     state._lose = True
         else:
             enemy_state = state.agent_states[agent_index]
             enemy_position = enemy_state.get_position()
-            if EnemyRules.canKill(bomberman_position, enemy_position) and not state.is_win() and not state.is_lose():
+            if EnemyRules.can_kill(bomberman_position, enemy_position) and not state.is_win() and not state.is_lose():
                 state.score -= 500
                 state.score_item.append(-500)
                 state._lose = True
@@ -351,7 +351,7 @@ class AgentState:
         return self.configuration == other.configuration
 
     def copy(self):
-        state = AgentState(self.start, self.is_bomberman)
+        state = AgentState(self.configuration, self.is_bomberman)
         state.configuration = self.configuration
         return state
 
@@ -387,6 +387,9 @@ class GameState:
     def get_legal_actions(self, agent_index, exclude_enemy=False):
         if agent_index >= len(self.agent_states) or agent_index < 0:
             raise Exception('Invalid index')
+
+        if self._win or self._lose:
+            return []
 
         if agent_index == 0:
             possible = BombermanRules.get_legal_actions(self, exclude_enemy)
@@ -424,6 +427,9 @@ class GameState:
 
         if agent_index >= len(self.agent_states) or agent_index < 0:
             raise Exception('Invalid index')
+
+        if self._win or self._lose:
+            raise Exception("Can\'t generate a successor of a terminal state.")
 
         if agent_index == 0:
             BombermanRules.apply_action(self, action)
