@@ -37,7 +37,7 @@ class BaseEnv(gym.Env):
         self.refresh_map()
         self.current_step = 0
         self.score = 0
-    
+        self.done = False
         return utils.map_to_obs(self.map.data, self.obs_shape)
 
     def step(self, action):
