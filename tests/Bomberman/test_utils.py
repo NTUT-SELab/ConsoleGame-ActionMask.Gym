@@ -1,4 +1,4 @@
-from env.Pacman import utils
+from env.Bomberman import utils
 
 
 def test_nearestPoint():
