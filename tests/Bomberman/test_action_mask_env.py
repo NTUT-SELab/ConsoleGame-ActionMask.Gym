@@ -15,22 +15,22 @@ def test_step(action_mask: ActionMaskEnv):
     assert not done
 
     obs, reward, done, mask = action_mask.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert action_mask.state.get_bomberman().get_direction() == 'East'
     assert mask == {'action_mask': [0, 0, 1, 0, 1, 1]}
 
     obs, reward, done, mask = action_mask.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert action_mask.state.get_bomberman().get_direction() == 'East'
     assert mask == {'action_mask': [0, 0, 1, 1, 1, 1]}
 
     obs, reward, done, mask = action_mask.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert action_mask.state.get_bomberman().get_direction() == 'East'
     assert mask == {'action_mask': [0, 0, 1, 1, 1, 1]}
 
     obs, reward, done, mask = action_mask.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert action_mask.state.get_bomberman().get_direction() == 'East'
     assert mask == {'action_mask': [1, 0, 0, 1, 1, 1]}
 
@@ -44,7 +44,7 @@ def test_step(action_mask: ActionMaskEnv):
     action_mask.state.get_bombs().append(bomb)
 
     obs, reward, done, mask = action_mask.step(4)
-    assert reward == 710
+    assert reward == 80
     assert done
 
 

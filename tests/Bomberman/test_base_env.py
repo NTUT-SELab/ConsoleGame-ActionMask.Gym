@@ -20,19 +20,19 @@ def test_step(base_env: BaseEnv):
     assert not done
 
     obs, reward, done, _ = base_env.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert base_env.state.get_bomberman().get_direction() == 'East'
 
     obs, reward, done, _ = base_env.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert base_env.state.get_bomberman().get_direction() == 'East'
 
     obs, reward, done, _ = base_env.step(2)
-    assert reward == 0
+    assert reward == -0.01
     assert base_env.state.get_bomberman().get_direction() == 'East'
 
     obs, reward, done, _ = base_env.step(4)
-    assert reward == 0
+    assert reward == -0.01
 
     obs, reward, done, _ = base_env.step(4)
     assert reward == 10
@@ -42,7 +42,7 @@ def test_step(base_env: BaseEnv):
     base_env.state.get_bombs().append(bomb)
 
     obs, reward, done, _ = base_env.step(4)
-    assert reward == 710
+    assert reward == 80
     assert done
 
 
@@ -64,4 +64,4 @@ def test_get_reward(base_env: BaseEnv):
 
     base_env.state.score_item = [10, 200, -500, 500]
     assert reward == -0.01
-    assert base_env.get_reward() == 210
+    assert base_env.get_reward() == 30
