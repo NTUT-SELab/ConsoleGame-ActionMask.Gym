@@ -8,7 +8,9 @@ def generate_texts_to_map(map):
     """
     The starting position of the galaxian.
     """
+    
     for _ in range(5):
+        map.refresh()
         #Random choose starting point for max size of 3x3 texts, -1 = right end, 3 = space
         start_point = rnd.randint(1, map.width - 1 - 3)
         high = width = rnd.randint(1, 3)
