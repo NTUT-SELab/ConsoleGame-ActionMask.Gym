@@ -144,7 +144,7 @@ class MagicKeyGame(MagicKeyBaseEnv):
             try:
                 if key.char == '1':
                     self.action = 26
-                else:    
+                elif 90 >= ord(key.char.upper()) >= 65:    
                     self.action = ord(key.char.upper()) - 65
             except:
                 self.action = -1
