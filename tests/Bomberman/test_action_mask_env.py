@@ -11,7 +11,7 @@ def test_step(action_mask: ActionMaskEnv):
     action_mask.reset()
     obs, reward, done, _ = action_mask.step(5)
     assert obs.shape == (9, 5, 8)
-    assert reward == 0
+    assert reward == 0.01
     assert not done
 
     obs, reward, done, mask = action_mask.step(2)

@@ -16,7 +16,7 @@ def test_step(base_env: BaseEnv):
     base_env.reset()
     obs, reward, done, _ = base_env.step(5)
     assert obs.shape == (9, 5, 8)
-    assert reward == 0
+    assert reward == 0.01
     assert not done
 
     obs, reward, done, _ = base_env.step(2)
@@ -63,5 +63,5 @@ def test_get_reward(base_env: BaseEnv):
     obs, reward, done, _ = base_env.step(4)
 
     base_env.state.score_item = [10, 200, -500, 500]
-    assert reward == 0
+    assert reward == -0.01
     assert base_env.get_reward() == 210
