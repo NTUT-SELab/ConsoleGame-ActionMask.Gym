@@ -6,7 +6,7 @@ import webbrowser
 import time
 sys.path.append('./')
 
-from examples.controller import PacmanGame, GalaxianGame, BombermanGame
+from examples.controller import PacmanGame, GalaxianGame, BombermanGame, MagicKeyGame
 
 
 class UI:
@@ -45,8 +45,9 @@ class UI:
 
     def layout(self):
         self.window = sg.Window(
-            'ConsoleGame-ActionMask', [[sg.Combo(['Pacman', 'Galaxian', 'Bomberman'], default_value='Pacman')],
-                                       [sg.Button('Play'), sg.Button('Train')]]
+            'ConsoleGame-ActionMask',
+            [[sg.Combo(['Pacman', 'Galaxian', 'Bomberman', 'MagicKey'], default_value='Pacman')],
+             [sg.Button('Play'), sg.Button('Train')]]
         )
 
     def play(self, game='Pacman'):
@@ -67,6 +68,12 @@ class UI:
             self.text_box = sg.Text(str(game.state), font='Courier 10', key='-BOX-')
             self.text_score = sg.Text('Your score is 0                           ', key='-SCORE-')
             self.window2 = sg.Window('BombermanGame', [[self.text_box], [self.text_score]])
+            threading.Thread(target=game.play, args=(self.text_box, self.text_score), daemon=True).start()
+        elif game == 'MagicKey':
+            game = MagicKeyGame()
+            self.text_box = sg.Text(str(game.map_to_string()), font='Courier 10', key='-BOX-')
+            self.text_score = sg.Text('Your score is 0                           ', key='-SCORE-')
+            self.window2 = sg.Window('MagicKey', [[self.text_box], [self.text_score]])
             threading.Thread(target=game.play, args=(self.text_box, self.text_score), daemon=True).start()
 
     def train(self, game="Pacman"):
