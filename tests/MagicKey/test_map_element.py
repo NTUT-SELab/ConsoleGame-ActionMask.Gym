@@ -41,16 +41,6 @@ def test_ballon_remove():
     assert not pytest.text_ballon.status
     assert len(np.where(pytest.text_ballon.texts != ' ')[0]) == 0
 
-def test_ballon_remove():
-    assert len(np.where(pytest.text_ballon.texts != ' ')[0]) == 4
-    key = pytest.text_ballon.texts[0][0]
-    pytest.text_ballon.remove(key)
-    assert len(np.where(pytest.text_ballon.texts != ' ')[0]) < 4
-    pytest.text_ballon.texts[pytest.text_ballon.texts != ' '] = ' '
-    pytest.text_ballon.remove(key)
-    assert not pytest.text_ballon.status
-    assert len(np.where(pytest.text_ballon.texts != ' ')[0]) == 0
-
 def test_ballon_eliminate_by_weapon():
     assert pytest.text_ballon.reward == 0
     pytest.text_ballon.eliminate_by_weapon()
