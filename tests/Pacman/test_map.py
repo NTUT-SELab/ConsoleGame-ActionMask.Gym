@@ -1,5 +1,5 @@
 import pytest
-from env.Pacman.map import Map
+from env.Pacman.map import Map, Grid
 import numpy as np
 
 
@@ -9,6 +9,20 @@ def test_copy(map: Map):
     assert map_copy.food == map.food
     assert map_copy.numGhosts == map.numGhosts
     assert map_copy is not map
+
+
+def test_grid():
+    with pytest.raises(Exception) as ex:
+        Grid(10, 10, "1213")
+    assert "Grids can only contain booleans" in str(ex.value)
+
+    grid = Grid(2, 2, True)
+
+    grid[0][0] = False
+    assert not grid[0][0]
+    assert str(grid) == "TT\nFT"
+
+    assert not grid == None
 
 
 def test_grid_as_list(map: Map):

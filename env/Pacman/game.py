@@ -377,9 +377,6 @@ class GameState:
         self._win = False
         self._lose = False
 
-    def getLayout(self):
-        return self.layout
-
     def getNumFood(self):
         return self.layout.food.count()
 

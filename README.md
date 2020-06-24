@@ -1,7 +1,11 @@
 # Console game [[OpenAI Gym](https://gym.openai.com/)]
 
 [![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
-[![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/KennethTang/github/4)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
+[![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/KennethTang/github/4/master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
+
+|Ubuntu|Windows|MacOS|
+|:--:|:--:|:--:|
+|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Ubuntu)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Windows)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=MacOS)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|
 
 ## Mouse walking maze
 <img src="./img/default_map.gif" align="right"/>

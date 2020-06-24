@@ -1,6 +1,7 @@
 import inspect
 import random
 import sys
+from functools import cmp_to_key
 
 
 def nearestPoint(pos):
@@ -150,7 +151,7 @@ class Counter(dict):
         ['second', 'third', 'first']
         """
         sortedItems = list(self.items())
-        sortedItems.sort(cmp=lambda x, y: sign(y[1] - x[1]))
+        sortedItems.sort(key=cmp_to_key(lambda x, y: sign(y[1] - x[1])))
         return [x[0] for x in sortedItems]
 
     def totalCount(self):

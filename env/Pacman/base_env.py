@@ -5,7 +5,6 @@ import time
 from env.Pacman.map import Map
 from env.Pacman.game import GameState, Actions
 from env.Pacman.ghost_agent import DirectionalGhost  # , RandomGhost
-import threading
 
 
 class BaseEnv(gym.Env):
@@ -106,48 +105,3 @@ class BaseEnv(gym.Env):
 
         """
         return self.current_step >= self.end_step or self.state_cache.isWin() or self.state_cache.isLose()
-
-    def play(self):
-        self.action = 3
-
-        t = threading.Thread(target=self.listener)
-        t.daemon = True
-        t.start()
-        self.stop = False
-
-        while (True):
-            self.reset()
-            self.pause = False
-            if self.stop:
-                break
-
-            while (not self.is_done()):
-                if self.stop:
-                    break
-
-                if not self.pause:
-                    self.step(self.action)
-                self.render(pause=self.pause)
-            print("Your score: {}".format(self.state_cache.score))
-            time.sleep(5)
-
-    def listener(self):
-        from pynput.keyboard import Listener, Key
-
-        def on_press(key):
-            if key == Key.up:
-                self.action = 0
-            elif key == Key.down:
-                self.action = 1
-            elif key == Key.right:
-                self.action = 2
-            elif key == Key.left:
-                self.action = 3
-            elif key == Key.esc:
-                self.pause = not self.pause
-            elif key == Key.delete:
-                self.stop = True
-                return False
-
-        with Listener(on_press=on_press) as li:
-            li.join()

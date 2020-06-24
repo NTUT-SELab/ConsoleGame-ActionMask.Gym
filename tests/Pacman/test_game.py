@@ -25,8 +25,12 @@ def test_configuration():
 
 
 def test_actions(state: GameState):
+    state.reset()
     assert Actions.getActionWithIndex(0) == 'North'
     assert Actions.getActionWithIndex(3) == 'West'
+    with pytest.raises(Exception) as ex:
+        Actions.getActionWithIndex(-1)
+    assert "Invalid action index!" in str(ex.value)
 
     assert Actions.reverseDirection('North') == 'South'
     assert Actions.reverseDirection('South') == 'North'
@@ -42,9 +46,21 @@ def test_actions(state: GameState):
     assert Actions.directionToVector('East') == (1, 0)
 
     assert Actions.getPossibleActions(state.agentStates[0], state.layout.walls) == ['South', 'East', 'West', 'Stop']
+    pacman = state.getPacmanState()
+    x, y = pacman.getPosition()
+    direction = pacman.getDirection()
+    pacman.configuration.pos = (x + 0.5, y)
+
+    assert Actions.getPossibleActions(pacman, state.layout.walls) == [direction]
+    state.reset()
+
+    state.getGhostState(1).configuration.pos = (x + 1, y)
+    assert Actions.getPossibleActions(state.getPacmanState(), state.layout.walls,
+                                      [state.getGhostState(1)]) == ['South', 'West', 'Stop']
 
 
 def test_ghost_rules(state: GameState):
+    state.reset()
     assert GhostRules.getLegalActions(state, 1) == ['East']
     assert GhostRules.getLegalActions(state, 2) == ['North', 'East', 'West']
 
@@ -55,6 +71,12 @@ def test_ghost_rules(state: GameState):
 
     GhostRules.applyAction(state, 'East', 1)
     assert state.getGhostState(1).getDirection() == 'East'
+
+    state.getGhostState(1).scaredTimer = 1
+    x, y = state.getGhostState(1).getPosition()
+
+    GhostRules.applyAction(state, 'East', 1)
+    assert state.getGhostPosition(1) == (x + 0.5, y)
 
     ghost_state = state.getGhostState(1)
     ghost_state.scaredTimer = 1
@@ -87,10 +109,27 @@ def test_pacman_rules(state: GameState):
     # not in legal
     PacmanRules.applyAction(state, 'North')
     assert state.getPacmanDirection() == 'Stop'
+
+    state.getPacmanState().configuration.direction = 'North'
+    PacmanRules.applyAction(state, 'North')
+    assert state.getPacmanDirection() == 'North'
+
     # legal
     PacmanRules.applyAction(state, 'East')
     assert state.getPacmanDirection() == 'East'
     assert state.scoreChange == 10
+
+    # consume food
+    state.layout.food.data[:] = False
+    state.layout.food.data[1][1] = True
+    PacmanRules.consume((1, 1), state)
+    assert state.isWin()
+
+    state.reset()
+
+    # consume capsule
+    PacmanRules.consume(state.getCapsules()[0], state)
+    assert state.getGhostState(1).scaredTimer > 0
 
 
 def test_agent_states():
@@ -102,10 +141,14 @@ def test_agent_states():
 
     assert pacman != ghost
 
+    assert not pacman == None
+
     assert pacman == pacman.copy()
 
     assert pacman.getPosition() == (0, 0)
     assert pacman.getDirection() == 'Stop'
+    pacman.configuration = None
+    assert pacman.getPosition() is None
 
 
 def test_game_state(state: GameState):
@@ -141,6 +184,8 @@ def test_game_state(state: GameState):
 
     assert "Can\'t generate a successor of a terminal state." in str(ex.value)
 
+    assert state.getLegalActions(0) == []
+
     state.reset()
     # test win and lose
     with pytest.raises(Exception) as ex:
@@ -154,7 +199,7 @@ def test_game_state(state: GameState):
     assert state.getLegalActions(1) == ["East"]
 
     state.reset()
-
+    state.getGhostState(1).scaredTimer = 10
     assert np.sum(state.toObservationMatrix()
                  ) == state.getNumFood() + state.getNumAgents() + state.layout.walls.count() + len(state.getCapsules())
 
