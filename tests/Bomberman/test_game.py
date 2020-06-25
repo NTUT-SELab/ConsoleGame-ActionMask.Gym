@@ -162,3 +162,39 @@ def test_game_state(state: GameState):
     assert np.sum(
         state.to_observation()
     ) == len(state.get_bombs()) + len(state.agent_states) + state.layout.walls.count() + state.layout.bricks.count()
+
+    state.generate_successor(0, 'East')
+    assert state.layout.shape == (5, 9)
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[2] == state.layout.walls.count()
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[3] == state.layout.bricks.count()
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[4] == 1
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[5] == 1
+    state.generate_successor(0, 'Bomb')
+    state.generate_successor(0, 'East')
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[5] == 2
+    state.generate_successor(0, 'East')
+    assert str(state) == """% % % % % % % % %
+%       E #     %
+%   % # % # %   %
+%     0 o   B   %
+% % % % % % % % %"""
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[5] == 1
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[6] == 1
+    state.generate_successor(0, 'East')
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[7] == 1
+    print(state)
+    assert str(state) == """% % % % % % % % %
+%       E #     %
+%   % # % # %   %
+%     O 0     B %
+% % % % % % % % %"""
+    state.generate_successor(0, 'East')
+
+    assert str(state) == """% % % % % % % % %
+%       E #     %
+%   %   % # %   %
+% * * * * * * B %
+% % % % % % % % %"""
+
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[8] == 6
+    assert np.bincount(state.to_observation_((5, 9, 1)).reshape((-1)).astype(np.int8))[3] == state.layout.bricks.count()

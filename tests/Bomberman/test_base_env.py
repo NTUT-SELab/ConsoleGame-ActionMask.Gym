@@ -9,13 +9,14 @@ def test_base_env(base_env: BaseEnv):
 
 
 def test_reset(base_env: BaseEnv):
-    assert base_env.reset().shape == (9, 5, 8)
+    base_env.current_step = 1
+    base_env.reset()
+    assert base_env.current_step == 0
 
 
 def test_step(base_env: BaseEnv):
     base_env.reset()
     obs, reward, done, _ = base_env.step(5)
-    assert obs.shape == (9, 5, 8)
     assert reward == 0.01
     assert not done
 

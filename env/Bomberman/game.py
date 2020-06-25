@@ -1,7 +1,7 @@
 import numpy as np
 from env.Bomberman.map import Map
 from env.Bomberman.utils import manhattanDistance
-from env.Bomberman.map_define import MapEnum
+from env.Bomberman.map_define import MapEnum, MapObsEnum
 
 TIME_PENALTY = 0  # Number of points lost each round
 COLLISION_TOLERANCE = 0.001
@@ -597,3 +597,34 @@ class GameState:
         observation = np.swapaxes(observation, 0, 2)
 
         return observation
+
+    def to_observation_(self, shape):
+        """
+        Convert map data to neural network input format.
+
+        : param shape:      (obs_shape) 神經網路輸入的形狀
+        """
+        map_data = np.zeros((self.layout.shape[0], self.layout.shape[1]))
+        map_data[self.layout.walls.data.T[::-1]] = MapObsEnum.wall.value
+        map_data[self.layout.bricks.data.T[::-1]] = MapObsEnum.brick.value
+
+        for bomb in self.bombs:
+            pos = bomb.pos
+            if bomb.countdown >= 3:
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.bomb3.value
+            elif bomb.countdown == 2:
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.bomb2.value
+            elif bomb.countdown == 1:
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.bomb1.value
+
+        for pos in self.explode_regions:
+            map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.bomb0.value
+
+        for agent_state in self.agent_states:
+            pos = agent_state.get_position()
+            if agent_state.is_bomberman:
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.bomberman.value
+            else:
+                map_data[-1 - int(pos[1])][int(pos[0])] = MapObsEnum.enemy.value
+
+        return np.reshape(map_data.astype(np.float16), shape)

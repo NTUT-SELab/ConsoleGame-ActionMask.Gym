@@ -20,8 +20,11 @@ class BaseEnv(gym.Env):
         self.state = GameState(self.map)
         self.end_step = end_step
         self.action_space = gym.spaces.Discrete(6)
-        self.obs_shape = (self.map.width, self.map.height, 8)
-        self.observation_space = gym.spaces.Box(low=0, high=1, shape=self.obs_shape, dtype=np.int8)
+        # for to_observation()
+        # self.obs_shape = (self.map.width, self.map.height, 8)
+        # for to_observation_(shape)
+        self.obs_shape = (self.map.shape[0], self.map.shape[1], 1)
+        self.observation_space = gym.spaces.Box(low=0, high=8, shape=self.obs_shape, dtype=np.int8)
         self.reset()
 
     def reset(self):
@@ -31,7 +34,7 @@ class BaseEnv(gym.Env):
         self.state.reset()
         self.current_step = 0
 
-        return self.state.to_observation()
+        return self.state.to_observation_(self.obs_shape)
 
     def step(self, action_index):
         """
@@ -46,7 +49,7 @@ class BaseEnv(gym.Env):
             reward = 0.01
         done = self.is_done()
 
-        obs = self.state.to_observation()
+        obs = self.state.to_observation_(self.obs_shape)
         self.current_step += 1
 
         return obs, reward, done, {}
