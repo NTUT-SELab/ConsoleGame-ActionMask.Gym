@@ -36,7 +36,6 @@ def test_step():
     assert pytest.env.get_reward() == 0
     obs, reward, done, _ = pytest.env.step(action)
     assert reward > 0
-    assert pytest.env.get_reward() == reward
     assert pytest.env.current_step == 1
 
 def test_render():
