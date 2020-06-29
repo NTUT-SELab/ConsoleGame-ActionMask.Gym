@@ -31,9 +31,17 @@ def test_remove_elements():
     pytest.map.elements[0].disable()
     pytest.map.remove_elements()
     assert len(pytest.map.elements) == 1
+    assert  pytest.map.elements[0].status
+    print (pytest.map.elements[0].position)
+    pytest.map.elements[0].position[0] = pytest.map.high
+    pytest.map.elements[0].status = False
+    pytest.map.remove_elements()
+    assert len(pytest.map.elements) == 0
+    
+
 
 def test_eliminate_texts_by_weapon():
-    pytest.map.wizard.receive_weapon(Weapon(4))
+    pytest.map.wizard.receive_weapon(Weapon(1))
     elements = [TextBallon([1, 1], (1,2,2)), TextBallon([1, 4], (1,2,2))]
     pytest.map.add_elements(elements)
     assert len(pytest.map.elements) == 2
@@ -41,13 +49,19 @@ def test_eliminate_texts_by_weapon():
     assert pytest.map.elements[1].status == True
     pytest.map.eliminate_texts_by_weapon()
     assert pytest.map.elements[0].status == False
-    assert pytest.map.elements[1].status == False
+    assert pytest.map.elements[1].status == True
+    pytest.map.eliminate_texts_by_weapon()
+    assert pytest.map.elements[0].status == False
+    assert pytest.map.elements[1].status == True
 
 def test_is_end():
-    elements = [TextBallon([1, 1], (1,2,2)), TextBallon([1, 4], (1,2,2))]
+    elements = [TextBallon([1, 1], (1,2,2)), TextBonus([1, 4], (1,1,1))]
     pytest.map.add_elements(elements)
     assert not pytest.map.is_end()
     assert pytest.map.elements[0].status
+    pytest.map.elements[1].position[0] = pytest.map.high - 3
+    assert not pytest.map.is_end()
+    assert not pytest.map.elements[1].status
     pytest.map.elements[0].position[0] = pytest.map.high - 3
     assert pytest.map.is_end()
     assert not pytest.map.elements[0].status
