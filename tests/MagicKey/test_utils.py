@@ -10,7 +10,13 @@ def setup_function():
 def test_generate_texts_to_map():
     assert len(pytest.map.elements) == 0
     utils.generate_texts_to_map(pytest.map)
-    assert len(pytest.map.elements) > 0
+    pytest.map.elements = []
+    pytest.map.width = 6
+    pytest.map.wizard.position[1] = 3
+    pytest.map.generate_data()
+    utils.generate_texts_to_map(pytest.map)
+    assert len(pytest.map.elements) == 1
+
 
 def test_is_enough_space():
     assert not utils.is_enough_space(2, 50, 40, pytest.map)

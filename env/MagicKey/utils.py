@@ -19,7 +19,7 @@ def generate_texts_to_map(map):
         if is_enough_space(start_point, width, high, map):
             text_ele = TextBallon([1, start_point], (1, high, width))
         #Not enough space for text ballon, generate bonus or weapon
-        elif is_enough_space(start_point, 3, 1, map):
+        elif is_enough_space(start_point, 1, 1, map):
             size = (1, 1, 3)
             left_texts_quantity = sum([ele.left_reward for ele in map.elements])
             #Generate text weapon or not
