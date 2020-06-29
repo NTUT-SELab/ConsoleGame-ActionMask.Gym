@@ -32,7 +32,6 @@ def test_remove_elements():
     pytest.map.remove_elements()
     assert len(pytest.map.elements) == 1
     assert  pytest.map.elements[0].status
-    print (pytest.map.elements[0].position)
     pytest.map.elements[0].position[0] = pytest.map.high
     pytest.map.elements[0].status = False
     pytest.map.remove_elements()

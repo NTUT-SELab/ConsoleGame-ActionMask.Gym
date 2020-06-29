@@ -29,7 +29,15 @@ def test_get_reward():
     pytest.env.done = True
     assert pytest.env.get_reward() == -500
 
-
+def test_step():
+    key = pytest.env.map.elements[0].texts[0][0]
+    action = ord(key) - 65
+    assert pytest.env.current_step == 0
+    assert pytest.env.get_reward() == 0
+    obs, reward, done, _ = pytest.env.step(action)
+    assert reward > 0
+    assert pytest.env.get_reward() == reward
+    assert pytest.env.current_step == 1
 
 def test_render():
     with mock.patch.object(base_env_py.time, "sleep") as mock_sleep:
