@@ -38,8 +38,18 @@ def test_step():
     assert reward > 0
     assert pytest.env.current_step == 1
 
-def test_render():
-    with mock.patch.object(base_env_py.time, "sleep") as mock_sleep:
-        pytest.env.render(10000)
+# def test_render():
+#     with mock.patch.object(base_env_py.time, "sleep") as mock_sleep:
+#         pytest.env.render(10000)
 
-    assert mock_sleep.call_args[0][0] == 10000
+#     assert mock_sleep.call_args[0][0] == 10000
+
+def test_map_to_string():
+    state = pytest.env.map_to_string()
+    assert state.count('#') == 96
+    assert state.count('^') == 17
+    assert state.count('@') == 1
+    assert state.count('-') > 1
+    assert state.count('|') > 1
+
+    
