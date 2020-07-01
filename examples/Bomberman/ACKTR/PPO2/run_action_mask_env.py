@@ -3,8 +3,8 @@ import sys
 sys.path.append('./')
 
 from env.Bomberman.action_mask_env import ActionMaskEnv
-from stable_baselines import PPO2
-from stable_baselines.common.vec_env import  DummyVecEnv, VecFrameStack
+from stable_baselines import ACKTR
+from stable_baselines.common.vec_env import  DummyVecEnv
 from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/Bomberman/action_mask/'
@@ -21,14 +21,13 @@ if len(sys.argv) > 1:
     model_tag = '_' + sys.argv[1]
 
 env = DummyVecEnv([lambda: ActionMaskEnv()])
-env = VecFrameStack(env, 3)
 
-model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=2500000, tb_log_name='PPO2' + model_tag)
+model = ACKTR(get_policy(policy), env, verbose=0, gae_lambda=0.95, tensorboard_log=tensorboard_folder)
+model.learn(total_timesteps=2500000, tb_log_name='ACKTR_PPO2' + model_tag)
 
-model.save(model_folder + "PPO2" + model_tag)
+model.save(model_folder + "ACKTR_PPO2" + model_tag)
 del model
-model = PPO2.load(model_folder + "PPO2" + model_tag)
+model = ACKTR.load(model_folder + "ACKTR_PPO2" + model_tag)
 
 done = False
 states = None

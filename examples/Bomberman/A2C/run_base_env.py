@@ -3,7 +3,7 @@ import sys
 sys.path.append('./')
 
 from env.Bomberman.base_env import BaseEnv
-from stable_baselines import PPO2
+from stable_baselines import A2C
 from stable_baselines.common.vec_env import  DummyVecEnv, VecFrameStack
 from examples.utils.utils import get_policy
 
@@ -23,12 +23,12 @@ if len(sys.argv) > 1:
 env = DummyVecEnv([lambda: BaseEnv()])
 env = VecFrameStack(env, 3)
 
-model = PPO2(get_policy(policy), env, verbose=0, nminibatches=1, tensorboard_log=tensorboard_folder)
-model.learn(total_timesteps=2500000, tb_log_name='PPO2' + model_tag)
+model = A2C(get_policy(policy), env, verbose=0, tensorboard_log=tensorboard_folder)
+model.learn(total_timesteps=2500000, tb_log_name='A2C' + model_tag)
 
-model.save(model_folder + "PPO2" + model_tag)
+model.save(model_folder + "A2C" + model_tag)
 del model
-model = PPO2.load(model_folder + "PPO2" + model_tag)
+model = A2C.load(model_folder + "A2C" + model_tag)
 
 done = False
 states = None

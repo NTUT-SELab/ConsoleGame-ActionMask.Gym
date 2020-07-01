@@ -8,7 +8,7 @@ from stable_baselines.common.vec_env import DummyVecEnv, VecFrameStack
 from examples.utils.utils import get_policy
 
 tensorboard_folder = './tensorboard/Pacman/action_mask/'
-model_folder = './models/Pacman/action_mask/'
+model_folder = './models/Pacman/base/'
 if not os.path.isdir(tensorboard_folder):
     os.makedirs(tensorboard_folder)
 if not os.path.isdir(model_folder):
