@@ -1,5 +1,7 @@
 from env.Pacman.base_env import BaseEnv as PacmanBaseEnv
 from env.Galaxian.base_env import BaseEnv as GalaxianBaseEnv
+from env.MagicKey.base_env import BaseEnv as MagicKeyBaseEnv
+
 import threading
 import time
 
@@ -97,6 +99,57 @@ class GalaxianGame(GalaxianBaseEnv):
             elif key == Key.right:
                 self.action = 1
             elif key == Key.esc:
+                self.pause = not self.pause
+            elif key == Key.delete:
+                self.stop = True
+                return False
+
+        with Listener(on_press=on_press) as li:
+            li.join()
+
+class MagicKeyGame(MagicKeyBaseEnv):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reset()
+    def play(self, textBox, textScore):
+        self.action = -1
+
+        threading.Thread(target=self.listener, daemon=True).start()
+        self.stop = False
+        self.reset()
+        self.pause = False
+
+        while (not self.is_done()):
+            if self.stop:
+                break
+
+            if not self.pause:
+                self.step(self.action)
+                textBox.update(str(self.map_to_string()))
+                textScore.update('Your score is ' + str(self.score))
+            else:
+                textScore.update('Pause')
+            time.sleep(0.5)
+
+        if self.is_done():
+            textScore.update(f'Game Over, score: {self.score}')
+
+        print("Your score: {}".format(self.score))
+
+    def listener(self):
+        from pynput.keyboard import Listener, Key
+
+        def on_press(key):
+            try:
+                if key.char == '1':
+                    self.action = 26
+                elif 90 >= ord(key.char.upper()) >= 65:    
+                    self.action = ord(key.char.upper()) - 65
+            except:
+                self.action = -1
+            
+            if key == Key.esc:
                 self.pause = not self.pause
             elif key == Key.delete:
                 self.stop = True

@@ -61,7 +61,7 @@ class TextBonus(TextElement):
         self.reward = 0
 
     def remove(self, key):
-        if self.texts[0] == key:
+        if len(self.texts) > 0 and self.texts[0] == key:
             del self.texts[0]
      
         if len(self.texts) == 0:
@@ -83,7 +83,7 @@ class TextWeapon(TextElement):
         self.reward = 0
 
     def remove(self, key):
-        if self.texts[0] == key:
+        if len(self.texts) > 0 and self.texts[0] == key:
             del self.texts[0]
      
         if len(self.texts) == 0:

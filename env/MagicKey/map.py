@@ -9,7 +9,8 @@ class Map:
         self.data = None
         self.elements = []
         self.wizard = Wizard([high -2, int(width / 2)])
-
+        self.generate_data()
+        
     def generate_data(self):
         self.data = np.full((self.high, self.width), MapEnum.space.value)
         self.data[0] = MapEnum.wall.value

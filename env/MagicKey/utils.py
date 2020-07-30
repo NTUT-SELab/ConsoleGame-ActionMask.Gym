@@ -8,7 +8,9 @@ def generate_texts_to_map(map):
     """
     The starting position of the galaxian.
     """
+    
     for _ in range(5):
+        map.refresh()
         #Random choose starting point for max size of 3x3 texts, -1 = right end, 3 = space
         start_point = rnd.randint(1, map.width - 1 - 3)
         high = width = rnd.randint(1, 3)
@@ -17,7 +19,7 @@ def generate_texts_to_map(map):
         if is_enough_space(start_point, width, high, map):
             text_ele = TextBallon([1, start_point], (1, high, width))
         #Not enough space for text ballon, generate bonus or weapon
-        elif is_enough_space(start_point, 3, 1, map):
+        elif is_enough_space(start_point, 1, 1, map):
             size = (1, 1, 3)
             left_texts_quantity = sum([ele.left_reward for ele in map.elements])
             #Generate text weapon or not
