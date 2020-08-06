@@ -1,11 +1,11 @@
 # Console game [[OpenAI Gym](https://gym.openai.com/)]
 
-[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
-[![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/KennethTang/github/4/master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)
+[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=10&branchName=master)
+[![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/KennethTang/github/10/master)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=10&branchName=master)
 
 |Ubuntu|Windows|MacOS|
 |:--:|:--:|:--:|
-|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Ubuntu)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Windows)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=MacOS)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=4&branchName=master)|
+|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Ubuntu)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=10&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=Windows)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=10&branchName=master)|[![Build Status](https://dev.azure.com/KennethTang/github/_apis/build/status/NTUT-SELab.ConsoleGame-ActionMask.Gym?branchName=master&jobname=MacOS)](https://dev.azure.com/KennethTang/github/_build/latest?definitionId=10&branchName=master)|
 
 ## Mouse walking maze
 <img src="./img/default_map.gif" align="right"/>
@@ -73,11 +73,13 @@ cd mouse-walking-maze.gym
 
 > SB_PATH是 `stable-baselines` 專案存放的路徑
 > ```
-> SB_PATH=/homes/user/stable-baselines/ ./scripts/run_docker_gpu.sh python ./examples/MouseWalkingMaze/default_map/run_base_env.py
+> SB_PATH=/homes/user/stable-baselines/ ./scripts/run_docker_gpu.sh python ./examples/Snake/PPO2/run_action_mask.py MlpPolicy
 > ```
 > 使用GPU請參考: [Build and run Docker containers leveraging NVIDIA GPUs](https://github.com/NVIDIA/nvidia-docker)
 
 - 直接執行
+> MlpPolicy 是策略神經網路，請參考: [Policy Networks](https://stable-baselines.readthedocs.io/en/master/modules/policies.html)
+>> 由於我們設計的遊戲狀態內容太小，導致預設的CNN策略神經網路不能捲機。因此我們自訂了較小的卷積層，請參考: [自定義策略神經網路](./examples/utils/custom_policy.py)
 > ```
-> python3 ./examples/MouseWalkingMaze/default_map/run_base_env.py
+> python3 ./examples/Snake/PPO2/run_action_mask.py MlpPolicy
 > ```
